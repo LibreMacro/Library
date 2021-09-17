@@ -141,12 +141,15 @@ Sub DeleteColumns (pSheet as String, IndexC as Integer, Units as Integer)
 End sub
 
 
-' Referência: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html
-Sub InsertCellNote(pSheet as String, pCell as Object, pNote as String)
+Sub InsertCellNote(pSheet as String, pCell as String, pNote as String)
 
-	Dim cellNotes As Object
-	cellNotes = Sheet(pSheet).getAnnotations()
-	cellNotes.insertNew( pCell.getCellAddress(), pNote)
+	Dim vCellNotes As Object
+	Dim vCell as Object
+	
+	vCell = Cell(pSheet, pCell)
+	 
+	vCellNotes = Sheet(pSheet).getAnnotations()
+	vCellNotes.insertNew(vCell.getCellAddress(), pNote)
 	
 End Sub
 
