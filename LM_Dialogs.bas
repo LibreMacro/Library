@@ -1,239 +1,188 @@
 REM  *****  BASIC  *****
 
-rem ********************************************** FOLHAS DE CÁLCULO
+rem ********************************************** CRIAR JANELAS DE DIÁLOGO
 
-' Sheet: Retorna a referência de uma folha de cálculo.
-' pSheet : nome da folha de cálculo (texto)
-FUNCTION Sheet (pSheet as String) as Object
+rem **************************** Funções simplificadas
+' ConfirmDialog: Caixa de diálogo contendo uma pergunta e duas opções: Ok e Cancelar.
+' pQuestion: Pergunta exibida na caixa de diálogo (texto)
+' pDialogTitle (Opcional) : Título da caixa de diálogo (texto)
+FUNCTION ConfirmDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
 
-	Sheet = Thiscomponent.Sheets.GetByName(pSheet)
-
-END FUNCTION
-
-
-rem ********************************************** CÉLULAS
-
-' Cell: Retorna a referência de uma célula.
-' pSheet : nome da folha de cálculo (texto)
-' pCell: nome da célula (texto)
-FUNCTION Cell (pSheet as String, pCell as String) as Object
-	
-	Cell = Sheet(pSheet).GetCellRangeByName(pCell)
-
-END FUNCTION
-
- 
- ' ActiveSheet: Retorna a planilha ativa (Objeto)
-Function ActiveSheet As Object
-
-	ActiveSheet = ThisComponent.getCurrentController.getActiveSheet()
-		
-End Function
-
-
-' ActiveSheet: Retorna a planilha ativa (Texto)
-Function ActiveSheetName As String
-
-	ActiveSheetName = ThisComponent.getCurrentController.getActiveSheet().getName()
-		
-End Function
-
-
-' CreateSheet: Criar uma nova folha de cálculo
-' pName: Nome da planilha a ser criada (texto)
-Sub CreateSheet(pName As String)
-	
-	Dim spreadsheet As Object
-	
-	If not ThisComponent.Sheets.hasByName(pName) Then
-		spreadsheet = ThisComponent.createInstance("com.sun.star.sheet.Spreadsheet")
-		ThisComponent.Sheets.insertByName(pName, spreadsheet)
-	End if
-End Sub
-
-
-' RemoveSheet: Remove uma folha de cálculo
-' pName: Nome da planilha a ser excluída
-Sub RemoveSheet(pName As String)
-
-	Dim spreadsheet As Object
-	
-	If ThisComponent.Sheets.hasByName(pName) Then
-		ThisComponent.Sheets.removeByName(pName)
-	End if
-
-End Sub
-
-' FindTextInCell: Procura texto dentro de determinada célula
-' pText : Texto procurado
-' pCell : Célula em que se realiza a busca 
-FUNCTION FindTextInCell(pText as String, pCell as String) as Boolean
-
-	if InStr( Cell(pCell).String , pText) <> 0 then
-		FindTextInTheCell = true
+	if Dialog(pQuestion, pDialogTitle, "confirmDialog") = true then
+		ConfirmDialog =  true
 	else
-		FindTextInTheCell = false
+		ConfirmDialog = false
 	end if
 
-END Function
+END FUNCTION
 
-rem ********************************************** SELECIONA UMA OU MAIS CÉLULAS
+' RetryDialog: Caixa de diálogo contendo uma pergunta e duas opções: "Tentar de novo" e "Cancelar".
+' pQuestion: Pergunta exibida na caixa de diálogo (texto)
+' pDialogTitle (Opcional) : Título da caixa de diálogo (texto)
+FUNCTION RetryDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
 
-' SelectCell: Seleciona uma ou mais células
-' pSheet : nome da folha de cálculo (texto)
-' pCellRange: nome da célula ou do intervalo de células (texto)
-Sub SelectCell(pSheet as String, pCellRange As String)
-
-	Dim Cells As Object
-	Cells = Cell(pSheet, pCellRange)
-	ThisComponent.getCurrentController.select(Cells)
-
-End Sub
-
-
-rem ********************************************** INSERIR LINHAS
-
-'InsertRows: Inserir Linhas
-'IndexL: Index da linha (Começa por 0)
-'Units: Unidades a serem inseridas
-
-Sub InsertRows (pSheet as String, IndexL as Integer, Units as Integer)
-
-	Sheet(pSheet).Rows.insertByIndex(IndexL, Units)
-	
-END sub
-
-rem ********************************************** INSERIR COLUNAS
-
-'InsertColumns: Inserir Colunas
-'IndexC: Index da coluna (Começa por 0)
-'Units: Unidades a serem inseridas
-
-Sub InsertColumns (pSheet as String, IndexC as Integer, Units as Integer)
-
-	Sheet(pSheet).Columns.insertByIndex(IndexC, Units)
-	
-END sub
-
-rem ********************************************** EXCLUIR LINHAS
-
-'DeleteRows: Excluir Linhas
-'IndexL: Index da linha (Começa por 0)
-'Units: Unidades a serem inseridas
-
-Sub DeleteRows (pSheet as String, IndexL as Integer, Units as Integer)
-
-	Sheet(pSheet).Rows.removeByIndex(IndexL, Units)
-	
-End sub
-
-
-rem ********************************************** EXCLUIR COLUNAS
-
-'DeleteColumns: Excluir Colunas
-'IndexC: Index da coluna (Começa por 0)
-'Units: Unidades a serem inseridas
-
-Sub DeleteColumns (pSheet as String, IndexC as Integer, Units as Integer)
-
-	Sheet(pSheet).Columns.removeByIndex(IndexC, Units)
-	
-End sub
-
-
-' Referência: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html
-Sub InsertCellNote(pSheet as String, pCell as Object, pNote as String)
-
-	Dim cellNotes As Object
-	cellNotes = Sheet(pSheet).getAnnotations()
-	cellNotes.insertNew( pCell.getCellAddress(), pNote)
-	
-End Sub
-
-
-Sub RemoveCellNote(pSheet as String, pCell as Object)
-
-	Dim cellNotes As Object
-	Dim oNotas As Object
-	Dim oNota As Object
-	Dim co1 As Long
-	
-	oNotas = Sheet(pSheet).getAnnotations()
-	oCelda = pCell
-	' Referência: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (início)
-	If oNotas.getCount() > 0 Then
-		For co1 = 0 To oNotas.getCount - 1
-			oNota = oNotas.getByIndex( co1 )
-			If oNota.getPosition.Column = oCelda.getCellAddress.Column And oNota.getPosition.Row = oCelda.getCellAddress.Row Then
-				oNotas.removeByIndex( co1 )
-				Exit Sub
-			End If
-			Next co1
+	if Dialog(pQuestion, pDialogTitle, "retryDialog") = true then
+		ConfirmDialog =  true
+	else
+		ConfirmDialog = false
 	end if
-	' Referência: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (fim)
+
+END FUNCTION
 
 
-	cellNotes.RemoveByAddress(pCell.getCellAddress())
-	'oDirCelda.Column = 2
-	'oDirCelda.Row = 10
-	'cellNotes.insertNew( oDirCelda, "Teste")  
+' QuestionDialog: Caixa de diálogo contendo uma pergunta e duas opções: "Sim" e "Não"
+' pQuestion: Pergunta exibida na caixa de diálogo (texto)
+' pDialogTitle (Opcional) : Título da caixa de diálogo (texto)
+FUNCTION QuestionDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
+
+	if Dialog(pQuestion, pDialogTitle, "questionDialog") = true then
+		ConfirmDialog =  true
+	else
+		ConfirmDialog = false
+	end if
+
+END FUNCTION
+
+
+rem **************************** Função Geral
+' Dialog: Caixa de diálogo contendo uma pergunta e duas opções.
+' pQuestion: Pergunta exibida na caixa de diálogo
+' pDialogTitle: Título da caixa de diálogo (Opcional)
+' -------------
+' pDialogType: Tipo de Caixa de diálogo (Opcional). Escolha:
+' 	questionDialog -(Botão sim e não) - Valor Padrão
+' 	confirmDialog - (Botão ok e cancelar)
+' 	retryDialog -   (Botão "Tentar de novo" e cancelar)
+' -------------
+' pDefaultButton: Escolher o Botão Padrão
+' 	firstBtnDefault - Primeiro Botão (Valor Padrão)
+' 	secondBtnDefault - Segundo Botão;
+' -------------
+' pIcon: Escolher o ícone da caixa de diálogo: stopIcon, questionIcon, exclamationIcon, informationIcon
+' -------------
+' Obs: Para "Caixa de Diálogo" personalizada, consulte:
+' https://help.libreoffice.org/6.2/en-US/text/sbasic/shared/03010102.html
+FUNCTION Dialog(pQuestion as String, Optional pDialogTitle as String, Optional pDialogType as String, Optional pDefaultButton as String, Optional pIcon as String) as Boolean
+
+	DIM parameters, result, selectedButton, selectedIcon as Integer
 	
-End Sub
+	If InStr(pDefaultButton , "second") <> 0 then
+		selectedButton = 256 
+	ELSE 
+		selectedButton = 128
+	END IF
 
-rem ********************************************** Limpa Conteudo das Células
+	If InStr(pIcon , "stop") <> 0 then
+		selectedIcon = 16
+	ElseIf InStr(pIcon , "exclamation") <> 0 then
+		selectedIcon = 48
+	ElseIf  InStr(pIcon , "information") <> 0 then
+		selectedIcon = 64 	
+	Else
+		selectedIcon = 32	
+	END IF	
+	
+	If InStr(pDialogType , "confirm") <> 0 then
+		parameters =  selectedButton + selectedIcon + 1	
+		result = 1	
+	ElseIf InStr(pDialogType , "retry") <> 0 then	
+		parameters =  selectedButton + selectedIcon + 5	
+		result = 4	
+	ELSE						'ConfirmDialog	
+		parameters =  selectedButton + selectedIcon + 4
+		result = 6		
+	END IF
 
-'ClearContents: Limpa Conteúdo das células
-'pSheet: nome da planilha
-'Range: Range das celulas para limpar o conteúdo
-'Argumento: 7 = 1 + 2 + 4 (Valor + Texto + Data/Hora)'
+	IF MsgBox (pQuestion, parameters, pDialogTitle) = result then 
+		Dialog = true
+	ELSE 
+		Dialog = false
+	END IF
 
-Sub ClearContents (pSheet as String, Range as String)
-
-	Sheet(pSheet).getCellRangeByName(Range).ClearContents(7)
-
-End sub
-
-rem ********************************************** Ordem Crescente
-'pSheet: nome da planilha
-'pRange: Range das celulas para ordenar
-'pIndexC: index da coluna de referência para ordenação começa por 0
-
-Sub SortAsc (pSheet as String, pRange as String, pIndexC as Integer)
-
-  Dim oSortFields(0) As New com.sun.star.util.SortField
- 
-  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
-   
-  oSortFields(0).Field = pIndexC
-  oSortFields(0).SortAscending = True
-
-  oSortDesc(0).Name = "SortFields"
-  oSortDesc(0).Value = oSortFields()
-
-  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
- 
-End sub
-
-rem ********************************************** Ordem Decrescente
-'pSheet: nome da planilha
-'pRange: Range das celulas para ordenar
-'pIndexC: index da coluna de referência para ordenação começa por 0
+END FUNCTION
 
 
-Sub SortDes (pSheet as String, pRange as String, pIndexC as Integer)
+' Dialog3: Caixa de diálogo contendo uma pergunta e três opções.
+' pQuestion: Pergunta exibida na caixa de diálogo
+' pDialogTitle: Título da caixa de diálogo (Opcional)
+' -------------
+' pDialogType: Tipo de Caixa de diálogo (Opcional). Escolha:
+' 	confirmDialog - Botões Yes, No, and Cancel buttons  - Valor Padrão
+' 	retryDialog   - Botões "Abortar", "Tentar de novo" e "Ignorar"
+' -------------
+' pDefaultButton: Escolher o Botão Padrão
+' 	firstBtnDefault - Primeiro Botão (Valor Padrão)
+' 	secondBtnDefault - Segundo Botão;
+' -------------
+' pIcon: Escolher o ícone da caixa de diálogo: stopIcon, questionIcon, exclamationIcon, informationIcon
+' -------------
+' Obs: Para "Caixa de Diálogo" personalizada, consulte:
+' https://help.libreoffice.org/6.2/en-US/text/sbasic/shared/03010102.html
+' ---------------------------
+'Exemplo de uso:
+'DIM resultado as String
+'	
+'	resultado = Dialog3("Você tem certeza ?")
+'	
+'	Select Case resultado
+'    Case "No":
+'    	'Ação no caso de não
+'    Case "Yes"
+'    	'Ação no caso de sim
+'    Case "Cancel"
+'        'Ação no caso de cancelar	
+'    End Select
 
-  Dim oSortFields(0) As New com.sun.star.util.SortField
- 
-  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
+FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional pDialogType as String, Optional pDefaultButton as String, Optional pIcon as String) as String
+	DIM parameters, result, selectedButton, selectedIcon, btn1, btn2, btn3 as Integer
+	
+	If InStr(pDefaultButton , "second") <> 0 then
+		selectedButton = 256 
+	Elseif  InStr(pDefaultButton , "third") <> 0 then 
+		selectedButton = 512
+	ELSE 
+		selectedButton = 128
+	END IF
 
-  oSortFields(0).Field = pIndexC
-  oSortFields(0).SortAscending = False
+	If InStr(pIcon , "stop") <> 0 then
+		selectedIcon = 16
+	ElseIf InStr(pIcon , "exclamation") <> 0 then
+		selectedIcon = 48
+	ElseIf  InStr(pIcon , "information") <> 0 then
+		selectedIcon = 64 	
+	Else
+		selectedIcon = 32	
+	END IF	
+	
+	If InStr(pDialogType , "retry") <> 0 then	    ' Display Abort, Retry, and Ignore buttons.
+		parameters =  selectedButton + selectedIcon + 5	
 
-  oSortDesc(0).Name = "SortFields"
-  oSortDesc(0).Value = oSortFields()
-  
-  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
- 
-end sub
+	Else 'InStr(pDialogType , "confirm") <> 0 then 	' Display Yes, No, and Cancel buttons.
+		parameters =  selectedButton + selectedIcon + 3	
+		
+	END IF
+	
+
+	result = MsgBox (pQuestion, parameters, pDialogTitle)
+	
+	Select Case result
+	Case 2: 
+		Dialog3 = "Cancel"
+	Case 3: 
+		Dialog3 = "Abort"
+	Case 4: 
+		Dialog3 = "Retry"
+	Case 5:
+		Dialog3 = "Ignore"
+	Case 6:
+		Dialog3 = "Yes"
+	Case 7:
+		Dialog3 = "No"
+	
+	End Select 
+
+
+END FUNCTION
+
 
 
