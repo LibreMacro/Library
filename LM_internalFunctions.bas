@@ -28,7 +28,7 @@ dim c$(3)
 		c(1) = 255
 		c(2) = 255
 	elseif UCase(mid(pColor,1,3)) = "RGB" then
-		b = mid(pColor,5,9)
+		b = mid(pColor,5,11)
 	 	c = split(b, ",",3)
 	end if
 	
