@@ -1,7 +1,3 @@
-﻿REM  *****  BASIC  *****
-
-rem **************************************************** CREATE DIALOGUE WINDOWS
-rem **************************** Simplified functions
 'ConfirmDialog: Dialog box containing a question and two options: Ok and Cancel.
 'pQuestion: Question displayed in dialog (text)
 'pDialogTitle (Optional): Dialog title (text)
@@ -177,7 +173,6 @@ FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional 
 		Dialog3 = "No"
 	
 	End Select 
-
 
 END FUNCTION
 

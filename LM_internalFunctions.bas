@@ -1,5 +1,3 @@
-﻿REM  *****  BASIC  *****
-
 FUNCTION GetColorCode (pColor as String) as Object
 dim c$(3)
 

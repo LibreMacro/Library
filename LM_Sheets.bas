@@ -1,4 +1,4 @@
-﻿' Sheet: Returns the reference of a worksheet (Object).
+' Sheet: Returns the reference of a worksheet (Object).
 ' pSheet : worksheet name (text)
 FUNCTION Sheet (pSheet as String) as Object
 
