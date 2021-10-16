@@ -1,4 +1,4 @@
-'ChangeFontSize: change the font size of a cell or range of cells
+﻿'ChangeFontSize: change the font size of a cell or range of cells
 'pSheet: Sheet name (text)
 'pRange: Range of cells to generate the effect/formatting (text)
 'pUnits: Range das celulas para formatar (texto)  (Ex: "A1:C3", "B5:D11")

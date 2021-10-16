@@ -1,112 +1,260 @@
-'ChangeFontSize: change the font size of a cell or range of cells
-'pSheet: Sheet name (text)
-'pRange: Range of cells to generate the effect/formatting (text)
-'pUnits: Range das celulas para formatar (texto)  (Ex: "A1:C3", "B5:D11")
-Sub ChangeFontSize (pSheet as String, pRange as String, pUnits as Integer)
+﻿' Sheet: Returns the reference of a worksheet (Object).
+' pSheet : worksheet name (text)
+FUNCTION Sheet (pSheet as String) as Object
 
-	'Sheet(pSheet).getCellRangeByName(pRange).CharHeight = pUnits
-	Cell(pSheet,pRange).CharHeight = pUnits
+	Sheet = Thiscomponent.Sheets.GetByName(pSheet)
 
-end sub
+END FUNCTION
 
-'ChangeFontColor: change the font color of a cell or range of cells
-'pSheet: Sheet name (text)
-'pRange: Range of cells to generate the effect/formatting (text)
-'pColor: Choose one of the options below or enter RGB code.
-' 1) red (Default); 2) blue; 3) yellow; 4) green; 5) black
-' example of orange color using RGB: pColor = "RGB(255,165,0)"
-Sub ChangeFontColor (pSheet as String, pRange as String, Optional pColor as String)
-dim c$(3)
 
-	if IsMissing(pColor) then
-		c = getColorCode("red") 	' Red (Default)		
+rem ************************************************* CELLS
+
+' Cell: Returns a cell reference (Object).
+' pSheet :Sheet name (text)
+' pCell: Cell or range of cells (text)
+FUNCTION Cell (pSheet as String, pCell as String) as Object
+	
+	if UCase(mid(pCell,1,3)) = "REF" then
+	
+		r = getCellRef(pCell)
+	
+		Cell = Sheet(pSheet).getCellByPosition(r(1),r(0))	
+	
+	else	
+	
+		Cell = Sheet(pSheet).GetCellRangeByName(pCell)
+	
+	end if
+	
+END FUNCTION
+
+ 
+ ' ActiveSheet: Returns the active sheet reference (Object)
+Function ActiveSheet As Object
+
+	ActiveSheet = ThisComponent.getCurrentController.getActiveSheet()
+		
+End Function
+
+' ActiveSheet: Returns the active sheet reference (text)
+Function ActiveSheetName As String
+
+	ActiveSheetName = ThisComponent.getCurrentController.getActiveSheet().getName()
+		
+End Function
+
+
+' CreateSheet: Create a new spreadsheet
+' pName: Name of the sheet to be created (text)
+Sub CreateSheet(pName As String)
+	
+	Dim spreadsheet As Object
+	
+	If not ThisComponent.Sheets.hasByName(pName) Then
+		spreadsheet = ThisComponent.createInstance("com.sun.star.sheet.Spreadsheet")
+		ThisComponent.Sheets.insertByName(pName, spreadsheet)
+	End if
+	
+End Sub
+
+
+' RemoveSheet: Remove a spreadsheet
+' pName: Sheet name to be deleted (text)
+Sub RemoveSheet(pName As String)
+
+	Dim spreadsheet As Object
+	
+	If ThisComponent.Sheets.hasByName(pName) Then
+		ThisComponent.Sheets.removeByName(pName)
+	End if
+
+End Sub
+
+' FindTextInCell: Search for text within a certain cell
+' pText : Text to be searched (text)
+' pCell : Cell in which the search takes place (text)
+FUNCTION FindTextInCell(pText as String, pCell as String) as Boolean
+
+	if InStr( Cell(pCell).String , pText) <> 0 then
+		FindTextInTheCell = true
 	else
-		c = getColorCode(pColor)
+		FindTextInTheCell = false
 	end if
 
-	'Sheet(pSheet).getCellRangeByName(pRange).CharColor = RGB(c(0),c(1),c(2))
-	Cell(pSheet,pRange).CharColor = RGB(c(0),c(1),c(2))
-	
-end sub
+END Function
 
-'ChangeCellColor: change the background color of a cell or range of cells
-'pSheet: Sheet name
-'pRange: Range of cells to generate the effect/formatting (text)
-'pColor: Choose one of the options below or enter RGB code.
-' 1) red (Default); 2) blue; 3) yellow; 4) green; 5) black
-' example of orange color using RGB: pColor = "RGB(255,165,0)"
-Sub ChangeCellColor (pSheet as String, pRange as String, Optional pColor as Variant)
-dim c$(3)
-dim r$(2)
+rem ********************************************** Select one or more cells
 
-	if IsMissing(pColor) then
-		c = getColorCode("red") 	' Red (Default)	
-	else
-		c = getColorCode(pColor)
-	end if
-	
-	Cell(pSheet, pRange).CellBackColor = RGB(c(0),c(1),c(2))
+' SelectCell: Select one or more cells
+' pSheet : Sheet name (text)
+' pCellRange: cell name or cell range name (text)
+Sub SelectCell(pSheet as String, pCellRange As String)
 
-end sub
-
-'FormatFont: Highlight text with some specific formatting
-'pSheet: Sheet name (text)
-'pRange: Range das celulas para limpar o conteúdo (texto)
-'pOption: Choose one of the options below.
-' "U" - Underline
-' "B" - Bold (Default)
-' "R" - Red color and bold
-' "I"   - Italic
-' "N" - Removes formatting: underlines, bold and red color
-Sub ChangeFontFormat (pSheet as String, pRange as String, Optional pOption as Variant)
-dim vOption as String
-
-	if IsMissing(pOption) then
-		Sheet(pSheet).getCellRangeByName(pRange).CharWeight  = 150
-	else
-		vOption = UCase(pOption)
-	end if
-	
-	if vOption = "B" then
-		Cell(pSheet,pRange).CharWeight  = 150 
-	elseif  vOption = "U" then
-		Cell(pSheet,pRange).CharUnderline  = 1
-	elseif vOption = "I" then
-		Cell(pSheet,pRange).CharPosture = 2
-	elseif vOption = "R" then		
-		ChangeFontColor(pSheet,pRange, "red")
-		Cell(pSheet,pRange).CharWeight = 150
-	elseif vOption = "N" then
-			Cell(pSheet,pRange).CharWeight  = 100
-			Cell(pSheet,pRange).CharPosture = 0
-			Cell(pSheet,pRange).CharUnderline  = 0
-			ChangeFontColor(pSheet,pRange, "black")
-	end if
-
-end sub
-
-'CreateStripedLines: generates the famous effect of striped lines in spreadsheets
-'pSheet: Sheet name (text)
-'pRange: Range of cells to generate the effect/formatting (text)
-sub CreateStripedLines(pSheet as String, pRange as String)
-Dim oSel As Object
-Dim num As Long
-
-	oSel = 	Sheet(pSheet).getCellRangeByName(pRange)
-
-	For num = 0 To oSel.getRows.getCount() - 1 
-	
-		if num mod 2 = 0 then
-			oSel.getCellRangeByPosition(0,num,oSel.getColumns.getCount() -1 , num).CellBackColor = RGB( 230,230,230 )
-		else
-			oSel.getCellRangeByPosition(0,num,oSel.getColumns.getCount() -1 , num).CellBackColor = RGB( 255,255,255 )
-		end if
-
-	Next
+	Dim Cells As Object
+	Cells = Cell(pSheet, pCellRange)
+	ThisComponent.getCurrentController.select(Cells)
 
 End Sub
 
 
+rem ********************************************** INSERT ROWS
 
+'InsertRows: Function for inserting rows at a certain position within a spreadsheet
+'pSheet: Sheet name (text)
+'pIndex: Insertion position:  Line number (number greater than zero)
+'pUnits: quantity to be added (number greater than zero)
+Sub InsertRows (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	Sheet(pSheet).Rows.insertByIndex(pIndex - 1, pUnits)
+	
+END sub
+
+rem ********************************************** INSERT COLUMNS
+
+'InsertColumns: Insert Columns
+'pSheet: Sheet name (text)
+'pIndex: Insertion position: Column number (Ex: Column A -> 1, Column B -> 2, Column C -> 3)
+'pUnits: Units to be inserted (number greater than zero)
+Sub InsertColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	Sheet(pSheet).Columns.insertByIndex(pIndex - 1, pUnits)
+	
+END sub
+
+rem ************************************************* DELETE LINES
+
+'DeleteRows: Delete Rows
+'pSheet: Desired spreadsheet (text)
+'pIndex: Delete position: Row number (number greater than zero)
+'pUnits: Units to be inserted (number greater than zero)
+Sub DeleteRows (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	Sheet(pSheet).Rows.removeByIndex(pIndex - 1, pUnits)
+	
+End sub
+
+
+rem ************************************************* DELETE COLUMNS
+
+'DeleteColumns: Delete Columns
+'pSheet: Desired spreadsheet (text)
+'pIndex: Exclusion position: Column number (Ex: Column A -> 1, Column B -> 2, Column C -> 3)
+'pUnits: Units to be inserted (number greater than zero)
+Sub DeleteColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	Sheet(pSheet).Columns.removeByIndex(pIndex - 1, pUnits)
+	
+End sub
+
+'InsertCellNote: Inserts annotation into a cell
+'pSheet: Desired spreadsheet (text)
+'pCell: Cell where the insertion will be performed (Ex: Cell A2 -> "A2", Cell D3 -> "D3") (text)
+'pNote: Text containing the annotation
+Sub InsertCellNote(pSheet as String, pCell as String, pNote as String)
+
+	Dim vCellNotes As Object
+	Dim vCell as Object
+	
+	vCell = Cell(pSheet, pCell)
+	 
+	vCellNotes = Sheet(pSheet).getAnnotations()
+	vCellNotes.insertNew(vCell.getCellAddress(), pNote)
+	
+End Sub
+
+'RemoveCellNote: Inserts note into a cell
+'pSheet: Desired spreadsheet (text)
+'pCell: Cell where the annotation will be deleted (Ex: Cell A2 -> "A2", Cell D3 -> "D3") (text)
+Sub RemoveCellNote(pSheet as String, pCell as Object)
+
+	Dim cellNotes As Object
+	Dim oNotas As Object
+	Dim oNota As Object
+	Dim co1 As Long
+	
+	oNotas = Sheet(pSheet).getAnnotations()
+	oCelda = pCell
+	' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (início)
+	If oNotas.getCount() > 0 Then
+		For co1 = 0 To oNotas.getCount - 1
+			oNota = oNotas.getByIndex( co1 )
+			If oNota.getPosition.Column = oCelda.getCellAddress.Column And oNota.getPosition.Row = oCelda.getCellAddress.Row Then
+				oNotas.removeByIndex( co1 )
+				Exit Sub
+			End If
+			Next co1
+	end if
+	' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (fim)
+
+	cellNotes.RemoveByAddress(pCell.getCellAddress()) 
+	
+End Sub
+
+rem ************************************************* Cleans the contents of the cells
+
+'ClearContents: Clear existing content in cells
+'This version only excludes values, texts and date/time keeping, therefore,
+'the formulas.
+'pSheet: Sheet name (text)
+'pRange: Range of cells to clear content (text)
+'pOption (optional):
+' small - Erases values, texts and date/time information
+' medium - In addition to what content does, it also erases formulas
+' all - Erases everything in the cell (formats, annotations, formulas, content, etc.) 
+Sub ClearContents (pSheet as String, pRange as String, Optional pOpcao as String)
+dim vNumber as Integer
+	
+	vNumber = 7
+	
+	if pOpcao = "medium" then
+		vNumber = 23
+	elseif pOpcao = "large" then
+		vNumber = 1023
+	end if
+	
+	'Sheet(pSheet).getCellRangeByName(pRange).ClearContents(vNumber)
+	Cell(pSheet,pRange).ClearContents(vNumber)
+
+End sub
+
+rem ********************************************* Ascending Order
+'pSheet: sheet name
+'pRange: Range of cells to sort (text) (Ex: "A1:C3", "B5:D11")
+'pIndex: Reference column number (Ex: 1 - First column, 2 - second column etc.)
+Sub SortAsc (pSheet as String, pRange as String, pIndex as Integer)
+
+  Dim oSortFields(0) As New com.sun.star.util.SortField
+ 
+  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
+   
+  oSortFields(0).Field = pIndex - 1
+  oSortFields(0).SortAscending = True
+
+  oSortDesc(0).Name = "SortFields"
+  oSortDesc(0).Value = oSortFields()
+
+  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+ 
+End sub
+
+rem ************************************************* Descending order
+'pSheet: sheet name (text)
+'pRange: Range of cells to sort (text) (Ex: "A1:C3", "B5:D11")
+'pIndex: Reference column number (Ex: 1 - First column, 2 - second column etc.)
+Sub SortDesc (pSheet as String, pRange as String, pIndex as Integer)
+
+  Dim oSortFields(0) As New com.sun.star.util.SortField
+ 
+  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
+
+  oSortFields(0).Field = pIndex
+  oSortFields(0).SortAscending = False
+
+  oSortDesc(0).Name = "SortFields"
+  oSortDesc(0).Value = oSortFields()
+  
+  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+ 
+end sub
 
 
