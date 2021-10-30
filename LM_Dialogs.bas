@@ -175,4 +175,3 @@ FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional 
 	End Select 
 
 END FUNCTION
-

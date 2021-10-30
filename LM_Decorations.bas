@@ -107,3 +107,15 @@ Dim num As Long
 
 End Sub
 
+'Under Construction
+'Sub CopyFontColor(pSheet as String, pCellToCopy as String, pCellToPaste As String) 
+'Dim colorLong As Long
+'Dim c$(3)
+'	colorLong = Cell(pSheet, pCellToCopy).CharColor
+ 
+' 	c = GetColorCode(  getRGBfromLong( colorLong ) )
+ 	
+' 	ChangeFontColor(pSheet, pCellToPaste,  rgbColor(c(0), c(1), c(2)) )
+
+'End sub
+
