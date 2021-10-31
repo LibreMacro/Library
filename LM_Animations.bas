@@ -2,8 +2,8 @@
 'pSheet: Sheet name (text)
 'pRange: Range of cells to generate the effect/formatting (text)
 'pSize: Final font size after animation ends
-'pTime: Interval between steps (ms)
-Sub AnimateFontSize(pSheet as String, pRange As String, Optional pSize As Integer, Optional pTime As Integer) 
+'pSpeed: Speed ​​at which the animation is performed ("fast", "medium" or "slow")
+Sub AnimateFontSize(pSheet as String, pRange As String, Optional pSize As Integer, Optional pSpeed As String) 
 
 	Dim vInitialSize As Integer
 	Dim vFinalSize As Integer
@@ -17,11 +17,19 @@ Sub AnimateFontSize(pSheet as String, pRange As String, Optional pSize As Intege
 		vFinalSize = pSize
 	end If
 	
-	if IsMissing(pTime) Then
-		vTime = 10	
+	if IsMissing(pSpeed) Then
+		vSpeed = "medium"
 	Else
-		vTime = pTime
+		vSpeed = pSpeed
 	end If
+
+ 	If vSpeed = "fast" then
+ 		vTime = 0
+ 	ElseIf  vSpeed = "medium" Then
+ 		vTime = 20
+ 	Else 
+ 		vTime = 50
+ 	End if
 	
 	vDiff = abs(vFinalSize - vInitialSize) 
 	
