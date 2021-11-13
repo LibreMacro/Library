@@ -1,4 +1,4 @@
-'ConfirmDialog: Dialog box containing a question and two options: Ok and Cancel.
+﻿'ConfirmDialog: Dialog box containing a question and two options: Ok and Cancel.
 'pQuestion: Question displayed in dialog (text)
 'pDialogTitle (Optional): Dialog title (text)
 FUNCTION ConfirmDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
@@ -175,3 +175,7 @@ FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional 
 	End Select 
 
 END FUNCTION
+
+Sub Macro1
+
+End Sub

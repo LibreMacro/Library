@@ -1,8 +1,13 @@
-' Sheet: Returns the reference of a worksheet (Object).
+﻿' Sheet: Returns the reference of a worksheet (Object).
 ' pSheet : worksheet name (text)
 FUNCTION Sheet (pSheet as String) as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	 
+		Sheet = Thiscomponent.Sheets.GetByName(pSheet)
+		
+	end if
 
-	Sheet = Thiscomponent.Sheets.GetByName(pSheet)
 
 END FUNCTION
 
@@ -14,15 +19,23 @@ rem ************************************************* CELLS
 ' pCell: Cell or range of cells (text)
 FUNCTION Cell (pSheet as String, pCell as String) as Object
 	
-	if UCase(mid(pCell,1,3)) = "REF" then
+	If CheckIfHasSheet(pSheet) Then
 	
-		r = getCellRef(pCell)
+		If ThisComponent.Sheets.hasByName(pSheet) Then
+		
+			if UCase(mid(pCell,1,3)) = "REF" then
+			
+				r = getCellRef(pCell)
+			
+				Cell = Sheet(pSheet).getCellByPosition(r(1),r(0))	
+			
+			else	
+			
+				Cell = Sheet(pSheet).GetCellRangeByName(pCell)
+			
+			end if
 	
-		Cell = Sheet(pSheet).getCellByPosition(r(1),r(0))	
-	
-	else	
-	
-		Cell = Sheet(pSheet).GetCellRangeByName(pCell)
+		end if
 	
 	end if
 	
@@ -64,7 +77,7 @@ Sub RemoveSheet(pName As String)
 
 	Dim spreadsheet As Object
 	
-	If ThisComponent.Sheets.hasByName(pName) Then
+	If CheckIfHasSheet(pSheet) Then
 		ThisComponent.Sheets.removeByName(pName)
 	End if
 
@@ -83,6 +96,45 @@ FUNCTION FindTextInCell(pText as String, pCell as String) as Boolean
 
 END Function
 
+' FindTextInColumn: Search for text within a certain cell
+' pText : Text to be searched (text)
+' pColumn : Number Of Column (A -> 1, B -> 2, C -> 3)
+' pLimit : Search the column until reaching the number row
+FUNCTION FindTextInColumn(pText as String, pSheet as String , pColumn as String, pLimitOption as Integer) as Boolean
+dim vCell as String
+dim vLimit as Integer
+dim vColumn as Integer
+dim vFindTextInTheCell as Boolean 
+
+	vFindTextInColumn = false
+	'vCell = pColumn & "1"
+	if IsMissing(pColumn) Then
+		vColumn = 1
+	Else
+		vColumn = pColumn
+	end If
+	
+	'Cell(pSheet,  vCell).Column
+
+	
+	if IsMissing(pLimitOption) Then
+		vLimitOption = 100	
+	Else
+		vLimit = pLimitOption
+	end If
+	
+	for i = 1 to vLimit step 1
+		if InStr( Cell(pSheet, REF(i,vColumn) ).String , pText) <> 0 then
+			vFindTextInColumn = true
+			FindTextInColumn = vFindTextInColumn
+			'exit function
+		end if
+	next
+	
+	FindTextInColumn = vFindTextInColumn
+
+END Function
+
 rem ********************************************** Select one or more cells
 
 ' SelectCell: Select one or more cells
@@ -90,10 +142,12 @@ rem ********************************************** Select one or more cells
 ' pCellRange: cell name or cell range name (text)
 Sub SelectCell(pSheet as String, pCellRange As String)
 
-	Dim Cells As Object
-	Cells = Cell(pSheet, pCellRange)
-	ThisComponent.getCurrentController.select(Cells)
-
+	If CheckIfHasSheet(pSheet) Then
+		Dim Cells As Object
+		Cells = Cell(pSheet, pCellRange)
+		ThisComponent.getCurrentController.select(Cells)
+	end if
+	
 End Sub
 
 
@@ -105,7 +159,9 @@ rem ********************************************** INSERT ROWS
 'pUnits: quantity to be added (number greater than zero)
 Sub InsertRows (pSheet as String, pIndex as Integer, pUnits as Integer)
 
-	Sheet(pSheet).Rows.insertByIndex(pIndex - 1, pUnits)
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Rows.insertByIndex(pIndex - 1, pUnits)
+	end if
 	
 END sub
 
@@ -117,7 +173,9 @@ rem ********************************************** INSERT COLUMNS
 'pUnits: Units to be inserted (number greater than zero)
 Sub InsertColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
 
-	Sheet(pSheet).Columns.insertByIndex(pIndex - 1, pUnits)
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Columns.insertByIndex(pIndex - 1, pUnits)
+	end if
 	
 END sub
 
@@ -129,7 +187,9 @@ rem ************************************************* DELETE LINES
 'pUnits: Units to be inserted (number greater than zero)
 Sub DeleteRows (pSheet as String, pIndex as Integer, pUnits as Integer)
 
-	Sheet(pSheet).Rows.removeByIndex(pIndex - 1, pUnits)
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Rows.removeByIndex(pIndex - 1, pUnits)
+	end if
 	
 End sub
 
@@ -142,7 +202,9 @@ rem ************************************************* DELETE COLUMNS
 'pUnits: Units to be inserted (number greater than zero)
 Sub DeleteColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
 
-	Sheet(pSheet).Columns.removeByIndex(pIndex - 1, pUnits)
+	if CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Columns.removeByIndex(pIndex - 1, pUnits)
+	end if
 	
 End sub
 
@@ -155,10 +217,13 @@ Sub InsertCellNote(pSheet as String, pCell as String, pNote as String)
 	Dim vCellNotes As Object
 	Dim vCell as Object
 	
-	vCell = Cell(pSheet, pCell)
-	 
-	vCellNotes = Sheet(pSheet).getAnnotations()
-	vCellNotes.insertNew(vCell.getCellAddress(), pNote)
+	If CheckIfHasSheet(pSheet) Then
+	
+		vCell = Cell(pSheet, pCell)	 
+		vCellNotes = Sheet(pSheet).getAnnotations()
+		vCellNotes.insertNew(vCell.getCellAddress(), pNote)
+	
+	end if
 	
 End Sub
 
@@ -172,21 +237,25 @@ Sub RemoveCellNote(pSheet as String, pCell as Object)
 	Dim oNota As Object
 	Dim co1 As Long
 	
-	oNotas = Sheet(pSheet).getAnnotations()
-	oCelda = pCell
-	' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (início)
-	If oNotas.getCount() > 0 Then
-		For co1 = 0 To oNotas.getCount - 1
-			oNota = oNotas.getByIndex( co1 )
-			If oNota.getPosition.Column = oCelda.getCellAddress.Column And oNota.getPosition.Row = oCelda.getCellAddress.Row Then
-				oNotas.removeByIndex( co1 )
-				Exit Sub
-			End If
-			Next co1
+	If CheckIfHasSheet(pSheet) Then
+	
+		oNotas = Sheet(pSheet).getAnnotations()
+		oCelda = pCell
+		' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (início)
+		If oNotas.getCount() > 0 Then
+			For co1 = 0 To oNotas.getCount - 1
+				oNota = oNotas.getByIndex( co1 )
+				If oNota.getPosition.Column = oCelda.getCellAddress.Column And oNota.getPosition.Row = oCelda.getCellAddress.Row Then
+					oNotas.removeByIndex( co1 )
+					Exit Sub
+				End If
+				Next co1
+		end if
+		' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (fim)
+	
+		cellNotes.RemoveByAddress(pCell.getCellAddress()) 
+	
 	end if
-	' Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (fim)
-
-	cellNotes.RemoveByAddress(pCell.getCellAddress()) 
 	
 End Sub
 
@@ -213,7 +282,9 @@ dim vNumber as Integer
 	end if
 	
 	'Sheet(pSheet).getCellRangeByName(pRange).ClearContents(vNumber)
-	Cell(pSheet,pRange).ClearContents(vNumber)
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet,pRange).ClearContents(vNumber)
+	end if
 
 End sub
 
@@ -227,13 +298,17 @@ Sub SortAsc (pSheet as String, pRange as String, pIndex as Integer)
  
   Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
    
-  oSortFields(0).Field = pIndex - 1
-  oSortFields(0).SortAscending = True
-
-  oSortDesc(0).Name = "SortFields"
-  oSortDesc(0).Value = oSortFields()
-
-  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  If CheckIfHasSheet(pSheet) Then
+  
+	  oSortFields(0).Field = pIndex - 1
+	  oSortFields(0).SortAscending = True
+	
+	  oSortDesc(0).Name = "SortFields"
+	  oSortDesc(0).Value = oSortFields()
+	
+	  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  
+  end if
  
 End sub
 
@@ -246,14 +321,18 @@ Sub SortDesc (pSheet as String, pRange as String, pIndex as Integer)
   Dim oSortFields(0) As New com.sun.star.util.SortField
  
   Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
-
-  oSortFields(0).Field = pIndex
-  oSortFields(0).SortAscending = False
-
-  oSortDesc(0).Name = "SortFields"
-  oSortDesc(0).Value = oSortFields()
   
-  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  If CheckIfHasSheet(pSheet) Then
+	
+	  oSortFields(0).Field = pIndex
+	  oSortFields(0).SortAscending = False
+	
+	  oSortDesc(0).Name = "SortFields"
+	  oSortDesc(0).Value = oSortFields()
+	  
+	  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  
+  end if
  
 end sub
 

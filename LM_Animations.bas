@@ -1,4 +1,4 @@
-'AnimateFontSize: Creates an animation in which a gradual variation of the font size is performed.
+﻿'AnimateFontSize: Creates an animation in which a gradual variation of the font size is performed.
 'pSheet: Sheet name (text)
 'pRange: Range of cells to generate the effect/formatting (text)
 'pSize: Final font size after animation ends
@@ -8,53 +8,57 @@ Sub AnimateFontSize(pSheet as String, pRange As String, Optional pSize As Intege
 	Dim vInitialSize As Integer
 	Dim vFinalSize As Integer
 	Dim vTime As Integer
+	
+	If CheckIfHasSheet(pSheet) Then
 
-	vInitialSize = Cell(pSheet, pRange).CharHeight
+		vInitialSize = Cell(pSheet, pRange).CharHeight
+		
+		if IsMissing(pSize) Then
+			vFinalSize = vInitialSize*1.5	
+		Else
+			vFinalSize = pSize
+		end If
+		
+		if IsMissing(pSpeed) Then
+			vSpeed = "medium"
+		Else
+			vSpeed = pSpeed
+		end If
 	
-	if IsMissing(pSize) Then
-		vFinalSize = vInitialSize*1.5	
-	Else
-		vFinalSize = pSize
-	end If
-	
-	if IsMissing(pSpeed) Then
-		vSpeed = "medium"
-	Else
-		vSpeed = pSpeed
-	end If
+	 	If vSpeed = "fast" then
+	 		vTime = 0
+	 	ElseIf  vSpeed = "medium" Then
+	 		vTime = 20
+	 	Else 
+	 		vTime = 50
+	 	End if
+		
+		vDiff = abs(vFinalSize - vInitialSize) 
+		
+		If vFinalSize > vInitialSize then
+		
+			For i= 1 To vDiff Step 1
+				
+				ChangeFontSize(pSheet, pRange, vInitialSize+i)
+				
+				wait vTime
+			
+			Next
+			
+		Else
+		
+			For i= 1 To vDiff Step 1
+				
+				ChangeFontSize(pSheet, pRange, vInitialSize-i)
+				
+				wait vTime
+			
+			Next
+		
+		End If
 
- 	If vSpeed = "fast" then
- 		vTime = 0
- 	ElseIf  vSpeed = "medium" Then
- 		vTime = 20
- 	Else 
- 		vTime = 50
- 	End if
-	
-	vDiff = abs(vFinalSize - vInitialSize) 
-	
-	If vFinalSize > vInitialSize then
-	
-		For i= 1 To vDiff Step 1
-			
-			ChangeFontSize(pSheet, pRange, vInitialSize+i)
-			
-			wait vTime
+	End if
 		
-		Next
-		
-	Else
-	
-		For i= 1 To vDiff Step 1
-			
-			ChangeFontSize(pSheet, pRange, vInitialSize-i)
-			
-			wait vTime
-		
-		Next
-	
-	End If
-	
 End Sub
 
 'AnimateFontColor: Creates an animation in which a gradual variation of the font color is performed.
@@ -80,60 +84,64 @@ Sub AnimateFontColor(pSheet as String, pRange As String, Optional pColor As Stri
  dim cA$(2) 
  Dim cB$(2) 
  
- 	if IsMissing(pSpeed) Then
-		vSpeed = "medium"
-	Else
-		vSpeed = pSpeed
-	end If
+ 	If CheckIfHasSheet(pSheet) Then
+	 
+	 	if IsMissing(pSpeed) Then
+			vSpeed = "medium"
+		Else
+			vSpeed = pSpeed
+		end If
+		
+	 	If vSpeed = "fast" then
+	 		vInc = 10
+	 		vTime = 0
+	 	ElseIf  vSpeed = "medium" Then
+	 		vInc = 5
+	 		vTime = 5
+	 	Else 
+	 		vInc = 1
+	 		vTime = 10
+	 	End if
+	 	
+	 	if IsMissing(pColor) Then
+			vColor = "red"
+		Else
+			vColor = pColor
+		end If
 	
- 	If vSpeed = "fast" then
- 		vInc = 10
- 		vTime = 0
- 	ElseIf  vSpeed = "medium" Then
- 		vInc = 5
- 		vTime = 5
- 	Else 
- 		vInc = 1
- 		vTime = 10
- 	End if
- 	
- 	if IsMissing(pColor) Then
-		vColor = "red"
-	Else
-		vColor = pColor
-	end If
-
- 	colorLong = Cell(pSheet, pRange).CharColor
- 
- 	cA = GetColorCode(  getRGBfromLong( colorLong ) )
- 	cB = GetColorCode( vColor )
- 	
- 	num1 = CInt( cA(0) )
- 	num2 = CInt( cB(0) )
- 	num3 = CInt( cA(1) )
- 	num4 = CInt( cB(1) )
- 	num5 = CInt( cA(2) )
- 	num6 = CInt( cB(2) )
-	                         
- 	vOperType1 = getOperType(num1, num2)
- 	
- 	vOperType2 = getOperType(num3, num4)
- 	
- 	vOperType3 = getOperType(num5, num6)
- 	
-	Do While (num1 <> num2 or num3 <> num4 or num5 <> num6)
-	   
-		num1 = NumberTransformation(num1, num2, vOperType1, vInc)
-	   		
-		num3 = NumberTransformation(num3, num4, vOperType2, vInc)
+	 	colorLong = Cell(pSheet, pRange).CharColor
+	 
+	 	cA = GetColorCode(  getRGBfromLong( colorLong ) )
+	 	cB = GetColorCode( vColor )
+	 	
+	 	num1 = CInt( cA(0) )
+	 	num2 = CInt( cB(0) )
+	 	num3 = CInt( cA(1) )
+	 	num4 = CInt( cB(1) )
+	 	num5 = CInt( cA(2) )
+	 	num6 = CInt( cB(2) )
+		                         
+	 	vOperType1 = getOperType(num1, num2)
+	 	
+	 	vOperType2 = getOperType(num3, num4)
+	 	
+	 	vOperType3 = getOperType(num5, num6)
+	 	
+		Do While (num1 <> num2 or num3 <> num4 or num5 <> num6)
+		   
+			num1 = NumberTransformation(num1, num2, vOperType1, vInc)
+		   		
+			num3 = NumberTransformation(num3, num4, vOperType2, vInc)
+			
+			num5 = NumberTransformation(num5, num6, vOperType3, vInc)
+			
+			ChangeFontColor(pSheet, pRange,  rgbColor( num1, num3, num5 ) )   
+	
+			wait vTime
+			
+		Loop
 		
-		num5 = NumberTransformation(num5, num6, vOperType3, vInc)
-		
-		ChangeFontColor(pSheet, pRange,  rgbColor( num1, num3, num5 ) )   
-
-		wait vTime
-		
-	Loop
+	End if
 
 End Sub
 
