@@ -11,20 +11,6 @@ FUNCTION ConfirmDialog(pQuestion as String, Optional pDialogTitle as String) as 
 
 END FUNCTION
 
-' RetryDialog: Dialog containing a question and two options: "Retry" and "Cancel".
-' pQuestion: Question displayed in dialog (text)
-' pDialogTitle (Optional) : Dialog title (text)
-FUNCTION RetryDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
-
-	if Dialog(pQuestion, pDialogTitle, "retryDialog") = true then
-		RetryDialog =  true
-	else
-		RetryDialog = false
-	end if
-
-END FUNCTION
-
-
 ' QuestionDialog: Dialog box containing a question and two options: "Yes" and "No"
 ' pQuestion: Question displayed in dialog (text)
 ' pDialogTitle (Optional) : Dialog title (text)
@@ -176,6 +162,16 @@ FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional 
 
 END FUNCTION
 
-Sub Macro1
+' RetryDialog: Dialog containing a question and two options: "Retry" and "Cancel".
+' pQuestion: Question displayed in dialog (text)
+' pDialogTitle (Optional) : Dialog title (text)
+FUNCTION RetryDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
 
-End Sub
+	if Dialog(pQuestion, pDialogTitle, "retryDialog") = true then
+		RetryDialog =  true
+	else
+		RetryDialog = false
+	end if
+
+END FUNCTION
+

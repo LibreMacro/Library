@@ -1,98 +1,223 @@
-﻿REM  *****  BASIC  *****
+﻿Global vFoundCell as String
 
-Sub CreateTemplateSheet(pOption as String, Optional pQty as Integer, Optional pLang as String)
-dim vLang as String
-Dim firstName(1 to 100) As String
-Dim lastName(1 to 50) As String
-dim course(1 to 20) as String
-dim uf (1 to 27) as String
-dim vNewName as String
-dim vQty as Integer
-Dim vNumberName as Integer
-Dim vNumberLastName as Integer
+FUNCTION GetColorCode (pColor as String) as Object
+dim c$(3)
 
+	if UCase(pColor) = "RED" then
+		c(0) = 255
+		c(1) = 0
+		c(2) = 0
+	elseif UCase(pColor) = "BLUE" then
+		c(0) = 0
+		c(1) = 0
+		c(2) = 255	
+	elseif UCase(pColor) = "YELLOW" then
+		c(0) = 255
+		c(1) = 255
+		c(2) = 0
+	elseif UCase(pColor) = "GREEN" then
+		c(0) = 0
+		c(1) = 255
+		c(2) = 0
+	elseif UCase(pColor) = "BLACK" then
+		c(0) = 0
+		c(1) = 0
+		c(2) = 0
+		elseif UCase(pColor) = "WHITE" then
+		c(0) = 255
+		c(1) = 255
+		c(2) = 255
+	elseif UCase(mid(pColor,1,3)) = "RGB" Then 
+	pColor = Replace(pColor, " ", "")
+		b = mid(pColor,5,11)
+		b2 =  split(b, ")",2)
+	 	c = split(b2(0), ",",3)
+	 	'c(2) = split( c, ")", 1)
+	end if
+	
+	GetColorCode = c
 
-firstName = Array("Adriana","Adriano","Alan","Albano","Aldo","Alexandre","Alice","Alice","Aline","Ana","Anderson","André","Andressa","Angélica","Antônia","Antônio","Arthur","Auri","Barbara","Beatriz","Benício","Bernardo","Caio","Camila","Carina","Carlos","Carolina","Cecília","Cecília","Celso","Cícero","Cláudia","Cláudio","Daniel","Davi","Diana","Eduardo","Emanuel","Enzo Gabriel","Fabiana","Fábio","Felipe","Fernanda","Fernando","Francisco","Gabriel","Gael","Gilberto","Gustavo","Heitor","Helena","Heloísa","Hugo","Isabella","Jaqueline","Jeferson","João","João","João Miguel","Júlia","Júlio","Juracy","Larissa","Laura","Leila","Leonardo","Letícia","Lívia","Lorena","Lorena","Lorenzo","Luan","Luana","Luana","Lucas","Luiz","Luiza","Manuel","Manuela","Marcelo","Marcos","Maria Cecília","Maria Clara","Maria Eduarda","Maria Júlia","Mariana","Marina","Maurício","Michelle","Miguel","Patrícia","Pedro","Samuel","Sophia","Theo","Thiago","Valentina","Vanessa","Viviane","Zenaide")
-lastName = Array("Albuquerque","Almeida","Alves","Andrade","Barbosa","Barros","Barroso","Batista","Borges","Cabanas","Campos","Cardoso","Castro","Cavalcanti","Cista","Conceição","Costa","Cremer","Dias","Duarte","Esteves","Fernandes","Ferreira","Freitas","Garcia","Gomes","Gonçalves","Lima","Lopes","Machado","Malheiros","Marques","Martins","Mendes","Miranda","Moraes","Moreira","Nascimento","Nunes","Oliveira","Pereira","Ribeiro","Rodrigues","Santana","Santos","Silva","Soares","Souza","Teixeira","Vieira")
-course = Array("Arquitetura","Astronomia","Biologia","Ciências Sociais","Direito", "Educação Artísitca","Educação Física", "Enfermagem","Engenharia","Física","História","Informática", "Letras","Matemática", "Medicina", "Pedagogia", "Psicologia", "Química","Relações Internacionais","Serviço Social")
-uf = Array("Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins","Distrito Federal")
+END FUNCTION
 
-	if IsMissing(pQty) Then
-			vQty = 100	
-		Else
-			vQty = pQty
-	end If
+Function CheckIfHasSheet(pSheet as String) as Boolean
 	
-	if IsMissing(pLang) Then
-			vLang = "pt"	
-		Else
-			vLang = pLang
-	end If
-	
-	if pOption = "uf" then
-	
-		CreateSheet("UF")
-	
-			For i= 2 To 28 Step 1
+	If ThisComponent.Sheets.hasByName(pSheet) Then
+		 
+			CheckIfHasSheet = True
 			
-				Cell("UF", REF(i, 1)).String = uf ( i - 2 )
+		else
+		
+			MsgBox("Warning: there is no spreadsheet named '" & pSheet & "' !" )
+			CheckIfHasSheet = False
 				
-			next
-			
-			Cell ("UF", "A1").String = "Unidades Federativas (BR)"
-			
-			SortAsc("UF", "A2:A30",1)
-			
-			sheet("UF").getColumns().getByIndex(0).OptimalWidth = True
-	
-	end if
-
-
-	if pOption = "names" or pOption = "students" then
-	
-		CreateSheet("Nomes")
-		
-		Cell("Nomes", "A1").String = "Nome"
-
-		For i= 2 To vQty Step 1
-		
-			Do 
-	   		
-	   			vNumberName = ( Int ( Rnd * 99) + 1 )
-				vNumberLastName = ( Int ( Rnd * 49) + 1 )
-				vNewName = firstName( vNumberName ) & " " & lastName( vNumberLastName)
-		
-			Loop until not FindTextInColumn(vNewName, "Nomes", 1, i+1)
-		
-			Cell("Nomes", REF(i, 1)).String = vNewName
-			
-		next
-		
-		SortAsc("Nomes", "A2:A10000", 1)		
-		
-		sheet("Nomes").getColumns().getByIndex(0).OptimalWidth = True
-		
 	end if
 		
-	if pOption = "students" then
+end Function
+
+function GetCellRef(pRef as String) as Object
+dim r$(2)
+
+	if UCase(mid(pRef,1,3)) = "REF" then
+		b = mid(pRef,5, len(pRef) - 1  ) 
+	 	r = split(b, ",",2)
+	end if
 	
-		Cell("Nomes", "B1").String = "Unidade"
-		Cell("Nomes", "C1").String = "Curso"
-		
-		For i= 2 To vQty Step 1
+	r(0) = Cint(r(0)) - 1
+	r(1) = Cint(r(1)) - 1
 	
-   			vNumberCourse = ( Int ( Rnd * 19) + 1 )
-   			
-   			vNumberUF =  ( Int ( Rnd * 26) + 1 )
-		
-			Cell("Nomes", REF(i, 2)).String = uf ( vNumberUF )
-			Cell("Nomes", REF(i, 3)).String = Course ( vNumberCourse )
+	GetCellRef = r
+
+end function
+
+function Ref(pLinha as Integer, pColuna) as String
+
+	Ref = "REF(" & CStr(pLinha) & "," & CStr(pColuna) & ")"
+
+end Function
+
+function rgbColor(pRed as Integer, pGreen As Integer, pBlue As Integer) as String
+
+	rgbColor = "RGB(" & CStr(pRed) & "," & CStr(pGreen) &  "," & CStr(pBlue) & ")"
+
+end function
+
+sub import(pName as String)
+		         
+	if GlobalScope.BasicLibraries.hasByName(pName) then
+	
+		if Not GlobalScope.BasicLibraries.isLibraryLoaded(pName) then
+	
+				GlobalScope.BasicLibraries.loadLibrary(pName)
+				
+		end if
 			
-		next
+	elseif BasicLibraries.hasByName(pName) then
+		
+		if Not BasicLibraries.isLibraryLoaded(pName) then
+		
+			BasicLibraries.loadLibrary(pName)
 			
-		sheet("Nomes").getColumns().getByIndex(1).OptimalWidth = True
-		sheet("Nomes").getColumns().getByIndex(2).OptimalWidth = True
+		end if
+		
+	else
 	
+		msgbox("Não foi possível importar a biblioteca")
+		
 	end if
 
-End Sub
+end Sub
+
+Function getRGBfromLong(pEntrada As Long) As String
+dim b As Integer
+dim g As Integer
+dim r As Integer
+Dim saldo As Long
+
+	saldo = pEntrada
+
+		If saldo / 65536 > 1 Then
+			r = ToFloor(saldo / 65536)
+			saldo = saldo - 65536*r
+		Else
+			r = 0 
+		End If
+		
+		If saldo / 256 > 1 Then
+			g = ToFloor(saldo / 256)
+			saldo = saldo - 256*g 
+		Else
+			g = 0
+		End If
+		
+		If saldo > 0 then
+			b = saldo
+		Else
+			b = 0
+		End if
+
+	 	getRGBfromLong = "RGB("& Cstr( r ) &","& CStr( g ) & "," & CStr( b ) & ")"
+
+End Function
+
+' Reference: Adaptation from
+' https://ask.libreoffice.org/t/lo-calc-basic-macro-how-to-work-with-integers/23049
+function ToFloor( v as Double ) as Long
+	dim aux as Long
+	aux = v
+	if aux > v then 
+		ToFloor = aux-1
+	else 
+		ToFloor = aux
+	EndIf
+
+end function	
+
+' Reference:  https://wiki.openoffice.org/wiki/Documentation/BASIC_Guide/Strings_(Runtime_Library)
+Function Replace(Source As String, Search As String, NewPart As String)
+  Dim Result As String  
+  Result = join(split(Source, Search), NewPart)
+  Replace = Result
+End Function
+
+Function getFoundCell as String
+
+	getFoundCell = vFoundCell
+	
+end function
+
+
+Function setFoundCell(pEntrada as String) as Object
+
+	vFoundCell = pEntrada
+
+end function
+
+Function getOperType(num1 As Integer, num2 As Integer) As String
+
+dim vOperType As String
+
+	If num1 < num2 Then
+ 		vOperType = "add"
+ 	ElseIf num1 > num2 then
+ 		vOperType = "minus"
+ 	End if	
+ 	
+ 	getOperType = vOperType
+
+End Function
+
+Function NumberTransformation(pNum1 As Integer, pNum2 As Integer, pOperType As String, pInc As Integer) As Integer	
+
+	If pOperType = "add" Then
+		if pNum1 < pNum2 Then
+			pNum1 = pNum1 + pInc
+		Else
+			pNum1 = pNum2
+		End If
+	Else 'operType = "minus"
+		if pNum1 > pNum2 Then
+			pNum1 = pNum1 - pInc
+		Else
+			pNum1 = pNum2
+		End If
+	End If
+	
+	NumberTransformation = pNum1
+
+End Function
+
+'Function ValueWhenParameterIsMissing(pEntrada, pDefault, pValue)
+'
+'	if IsMissing(pEntrada) Then
+'		vRetorno = pDefault
+'	Else
+'		vRetorno = pValue
+'	end If
+'	
+'	ValueWhenParameterIsMissing = vRetorno
+'
+'End Function
+
+
+
+

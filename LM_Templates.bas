@@ -1,5 +1,8 @@
 ﻿REM  *****  BASIC  *****
 
+' Cell: 
+' pSheet :Sheet name (text)
+' pCell: Cell or range of cells (text)
 Sub CreateTemplateSheet(pOption as String, Optional pQty as Integer, Optional pLang as String)
 dim vLang as String
 Dim firstName(1 to 100) As String

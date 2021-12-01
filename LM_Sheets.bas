@@ -1,4 +1,6 @@
-﻿' Sheet: Returns the reference of a worksheet (Object).
+﻿Global oFoundCell as Object 
+
+' Sheet: Returns the reference of a worksheet (Object).
 ' pSheet : worksheet name (text)
 FUNCTION Sheet (pSheet as String) as Object
 	
@@ -100,36 +102,53 @@ END Function
 ' pText : Text to be searched (text)
 ' pColumn : Number Of Column (A -> 1, B -> 2, C -> 3)
 ' pLimit : Search the column until reaching the number row
-FUNCTION FindTextInColumn(pText as String, pSheet as String , pColumn as String, pLimitOption as Integer) as Boolean
+FUNCTION FindTextInColumn(pText as String, pSheet as String , pColumn as Integer, Optional pLimitOption as Integer) as Boolean
 dim vCell as String
+dim vSearchedText as String
+dim vCellContent as String
 dim vLimit as Integer
 dim vColumn as Integer
 dim vFindTextInTheCell as Boolean 
 
-	vFindTextInColumn = false
-	'vCell = pColumn & "1"
-	if IsMissing(pColumn) Then
-		vColumn = 1
-	Else
-		vColumn = pColumn
-	end If
+	if pText <> "" then
+		
 	
-	'Cell(pSheet,  vCell).Column
-
+		vFindTextInColumn = false
+		'vCell = pColumn & "1"
+		if IsMissing(pColumn) Then
+			vColumn = 1
+		Else
+			vColumn = pColumn
+		end If
+		
+		'Cell(pSheet,  vCell).Column
 	
-	if IsMissing(pLimitOption) Then
-		vLimitOption = 100	
-	Else
-		vLimit = pLimitOption
-	end If
+		
+		if IsMissing(pLimitOption) Then
+			vLimit = 1000	
+		Else
+			vLimit = pLimitOption
+		end If
+		
+		vSearchedText = Replace(pText, " ", "")
+		vSearchedText = UCase( Trim( vSearchedText ) )
+		
+		for i = 1 to vLimit step 1
+		
+			vCellContent = Cell(pSheet, REF(i,vColumn) ).String 
+			vCellContent = Replace(vCellContent, " ", "")
+			vCellContent = UCase( Trim( vCellContent ) ) 
+			
+			if InStr( vCellContent , vSearchedText ) <> 0 then
+				vFindTextInColumn = true
+				setFoundCell(REF(i,vColumn))
+				FindTextInColumn = vFindTextInColumn
+			end if
+		next
+		
+	else
 	
-	for i = 1 to vLimit step 1
-		if InStr( Cell(pSheet, REF(i,vColumn) ).String , pText) <> 0 then
-			vFindTextInColumn = true
-			FindTextInColumn = vFindTextInColumn
-			'exit function
-		end if
-	next
+	end if
 	
 	FindTextInColumn = vFindTextInColumn
 
@@ -333,7 +352,7 @@ Sub SortDesc (pSheet as String, pRange as String, pIndex as Integer)
 	  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
   
   end if
- 
+   
 end sub
 
 
