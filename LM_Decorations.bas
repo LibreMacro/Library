@@ -1,12 +1,12 @@
-﻿
+
 'ChangeFontSize: change the font size of a cell or range of cells
 'pSheet: Sheet name (text)
 'pRange: Range of cells to generate the effect/formatting (text)
-'pUnits: Range das celulas para formatar (texto)  (Ex: "A1:C3", "B5:D11")
-Sub ChangeFontSize (pSheet as String, pRange as String, pUnits as Integer)
+'pSize: Font size
+Sub ChangeFontSize (pSheet as String, pRange as String, pSize as Integer)
 
 	If CheckIfHasSheet(pSheet) Then
-		Cell(pSheet,pRange).CharHeight = pUnits
+		Cell(pSheet,pRange).CharHeight = pSize
 	end if
 	
 end sub
@@ -58,6 +58,18 @@ dim r$(2)
 	end if
 
 end sub
+
+'ChangeCellStyle: Change the style of a cell or range of cells
+'pSheet: Sheet name (text)
+'pRange: Range of cells (text)
+'pStyle: Name of the new style to be used (text)
+Sub ChangeCellStyle(pSheet as String, pCell as String, pStyle As String)
+
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet, pCell).CellStyle = pStyle
+	End if
+	
+End sub
 
 'FormatFont: Highlight text with some specific formatting
 'pSheet: Sheet name (text)
@@ -122,6 +134,18 @@ Dim num As Long
 		
 	end if
 
+End Sub
+
+'ChangeFont: Change the font family to a new one
+'pSheet: Sheet name (text)
+'pRange: Range of cells (text)
+'pFont: Name of the new font that will be used (text)
+Sub ChangeFont(pSheet as String, pCell as String, pFont As String)
+
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet, pCell).CharFontName	= pFont
+	End if
+	
 End Sub
 
 'Under Construction

@@ -1,4 +1,3 @@
-﻿Global oFoundCell as Object 
 
 ' Sheet: Returns the reference of a worksheet (Object).
 ' pSheet : worksheet name (text)
