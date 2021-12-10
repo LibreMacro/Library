@@ -1,4 +1,4 @@
-
+﻿
 ' Sheet: Returns the reference of a worksheet (Object).
 ' pSheet : worksheet name (text)
 FUNCTION Sheet (pSheet as String) as Object
@@ -8,9 +8,24 @@ FUNCTION Sheet (pSheet as String) as Object
 		Sheet = Thiscomponent.Sheets.GetByName(pSheet)
 		
 	end if
-
-
+	
+	
 END FUNCTION
+
+' Sheet: Returns the reference of a row (Object).
+' pSheet : worksheet name (text)
+' pRow : Row number (integer)
+FUNCTION Row (pSheet as String, pRow as Integer) as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	 
+		Row = Sheet(pSheet).getRows.getByIndex(pRow  - 1)
+		
+	end if
+	
+	
+END FUNCTION
+
 
 
 rem ************************************************* CELLS
@@ -109,19 +124,16 @@ dim vLimit as Integer
 dim vColumn as Integer
 dim vFindTextInTheCell as Boolean 
 
+	vFindTextInColumn = false
+
 	if pText <> "" then
-		
-	
-		vFindTextInColumn = false
-		'vCell = pColumn & "1"
+
 		if IsMissing(pColumn) Then
 			vColumn = 1
 		Else
 			vColumn = pColumn
 		end If
 		
-		'Cell(pSheet,  vCell).Column
-	
 		
 		if IsMissing(pLimitOption) Then
 			vLimit = 1000	
@@ -138,14 +150,13 @@ dim vFindTextInTheCell as Boolean
 			vCellContent = Replace(vCellContent, " ", "")
 			vCellContent = UCase( Trim( vCellContent ) ) 
 			
-			if InStr( vCellContent , vSearchedText ) <> 0 then
+			if vCellContent = vSearchedText then
 				vFindTextInColumn = true
 				setFoundCell(REF(i,vColumn))
+				setFoundRow(i)
 				FindTextInColumn = vFindTextInColumn
 			end if
 		next
-		
-	else
 	
 	end if
 	
@@ -167,6 +178,22 @@ Sub SelectCell(pSheet as String, pCellRange As String)
 	end if
 	
 End Sub
+
+' SelectCell: Select one row
+' pSheet : Sheet name (text)
+' pRow : Row number (Integer)
+Sub SelectRow(pSheet as String, pRow As Integer)
+
+	Dim oRow As Object
+	
+	If CheckIfHasSheet(pSheet) Then
+		
+		oRow = Row(pSheet, pRow)
+		ThisComponent.getCurrentController.select(oRow)
+		
+	end if
+
+end Sub
 
 
 rem ********************************************** INSERT ROWS

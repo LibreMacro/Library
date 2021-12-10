@@ -1,4 +1,5 @@
 ﻿Global vFoundCell as String
+Global vFoundRow as Integer
 
 FUNCTION GetColorCode (pColor as String) as Object
 dim c$(3)
@@ -166,10 +167,22 @@ Function getFoundCell as String
 end function
 
 
-Function setFoundCell(pEntrada as String) as Object
+Sub setFoundCell(pEntrada as String) 
 
 	vFoundCell = pEntrada
 
+end Sub
+
+Sub setFoundRow(pEntrada as Integer) 
+
+	vFoundRow = pEntrada
+
+end Sub
+
+Function getFoundRow as Integer
+
+	getFoundRow = vFoundRow
+	
 end function
 
 Function getOperType(num1 As Integer, num2 As Integer) As String

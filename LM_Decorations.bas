@@ -1,4 +1,4 @@
-
+﻿
 'ChangeFontSize: change the font size of a cell or range of cells
 'pSheet: Sheet name (text)
 'pRange: Range of cells to generate the effect/formatting (text)
@@ -63,11 +63,51 @@ end sub
 'pSheet: Sheet name (text)
 'pRange: Range of cells (text)
 'pStyle: Name of the new style to be used (text)
-Sub ChangeCellStyle(pSheet as String, pCell as String, pStyle As String)
+Sub ChangeCellStyle(pSheet as String, pCell as String, Optional pStyle As String)
 
-	If CheckIfHasSheet(pSheet) Then
-		Cell(pSheet, pCell).CellStyle = pStyle
-	End if
+	if IsMissing(pStyle) then
+	
+		MsgBox("ChangeCellStyle: Please inform in the third parameter which style should be applied")
+	
+	else 
+
+		If CheckIfHasSheet(pSheet) Then
+			Cell(pSheet, pCell).CellStyle = pStyle
+		End if
+	
+	end if
+	
+End sub
+
+Sub ChangeRowStyle(pSheet as String, pRow as Integer, Optional pStyle As String)
+
+	if IsMissing(pStyle) then
+
+		MsgBox("ChangeRowStyle: Please inform in the third parameter which style should be applied")
+
+	else
+	
+		If CheckIfHasSheet(pSheet) Then
+			Row(pSheet, pRow).CellStyle = pStyle
+		End if
+		
+	end if
+	
+End sub
+
+Sub ChangeSheetStyle(pSheet as String, Optional pStyle As String)
+
+	if IsMissing(pStyle) then
+
+		MsgBox("ChangeSheetStyle: Please inform in the second parameter which style should be applied")
+
+	else
+	
+		If CheckIfHasSheet(pSheet) Then
+			Sheet(pSheet).CellStyle = pStyle
+		End if
+		
+	end if
 	
 End sub
 

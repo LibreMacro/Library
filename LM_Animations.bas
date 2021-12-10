@@ -145,6 +145,18 @@ Sub AnimateFontColor(pSheet as String, pRange As String, Optional pColor As Stri
 
 End Sub
 
+' 
+' Ref: https://ask.libreoffice.org/t/macros-please-easy/27618
+Sub ChangeFont(pSheet as String, pRange As String, pFont As String)
+Dim oText As Object
+Dim oCursor As Object
+
+	oText  = Cell(pSheet, pRange).getText()
+	oCursor = oText.createTextCursorByRange( Cell(pSheet, pRange) )
+	oCursor.CharFontName			= "Ubuntu"
+
+End sub
+
 ' Under Construction
 'Sub ToggleCellColor(pSheet as String, pRange As String, Optional pFirstColor As String, Optional pSecondColor As String, Optional pSteps as Integer, Optional pTime As Integer) 
 
