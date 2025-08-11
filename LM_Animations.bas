@@ -157,39 +157,39 @@ Dim oCursor As Object
 
 End sub
 
-' Under Construction
-'Sub ToggleCellColor(pSheet as String, pRange As String, Optional pFirstColor As String, Optional pSecondColor As String, Optional pSteps as Integer, Optional pTime As Integer) 
+Sub ToggleCellColor(pSheet as String, pRange As String, Optional pFirstColor As String, Optional pSecondColor As String, Optional pSteps as Integer, Optional pTime As Integer) 
 
-'dim numOfSteps as Integer
-'dim vFirstColor As String
-'Dim vSecondColor As String
+dim numOfSteps as Integer
+dim vFirstColor As String
+Dim vSecondColor As String
 
-'	if IsMissing(pSteps) Then
-'		numOfSteps = 5	
-'	else
-'		numOfSteps = pSteps	
-'	end If
+	if IsMissing(pSteps) Then
+		numOfSteps = 5	
+	else
+		numOfSteps = pSteps	
+	end If
 	
-'	if IsMissing(pFirstColor) Then
-'		vFirstColor = "black"	
-'	Else
-'		vFirstColor = pFirstColor
-'	end If
+	if IsMissing(pFirstColor) Then
+		vFirstColor = "black"	
+	Else
+		vFirstColor = pFirstColor
+	end If
 	
-'	c = getColorCode
+	'c = getColorCode
 
-'	for i = 1 to numOfSteps step 1
+	for i = 1 to numOfSteps step 1
 	
-'		ChangeCellColor(pSheet, pRange, vFirstColor)
+		ChangeCellColor(pSheet, pRange, vFirstColor)
 		
-'		wait 50
+		wait 1000
 		
-'		ChangeCellColor(pSheet, pRange, vSecondColor)
+		ChangeCellColor(pSheet, pRange, vSecondColor)
 		
-'		wait 50
+		wait 1000
 				
-'	next
+	next
 
-'End Sub
+End Sub
+
 
 
