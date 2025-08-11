@@ -13,4 +13,4 @@ A biblioteca está organizada como uma coleção de funções utilitárias. Desc
 
 # Desenvolvedores
 
-Esta biblioteca foi desenvolvida por Marcos Cabanas Esteves e
+Esta biblioteca foi desenvolvida por Marcos Cabanas Esteves e Thiago Andrade.
