@@ -15,8 +15,8 @@
 
 ## Introduction
 
-**LibreMacro** is a library designed to make it easier to create macros in **LibreOffice Calc**.  
-It provides functions to manipulate spreadsheets, create dialogs, format cells, animate visual effects, generate template sheets, and consume external data.
+**LibreMacro** is a library that makes it easier to create macros in **LibreOffice Calc**.  
+It offers functions to manipulate spreadsheets, create dialogs, format cells, animate visual effects, generate template sheets, and consume external data.
 
 Official repository: <https://github.com/LibreMacro/Library>  
 Free course: [YouTube playlist](https://www.youtube.com/playlist?list=PLw7mAr9L5qIy_19pSCvfQtlq2ro0digtn)
@@ -34,7 +34,6 @@ Free course: [YouTube playlist](https://www.youtube.com/playlist?list=PLw7mAr9L5
 ## Features
 
 ### Dialog Functions
-**File:** `Dialogs.xba`
 
 #### ConfirmDialog
 Dialog box with **OK** and **Cancel**.  
@@ -42,10 +41,13 @@ Dialog box with **OK** and **Cancel**.
 ConfirmDialog(pQuestion As String, Optional pDialogTitle As String) As Boolean
 ```
 **Return:** `True` if OK; `False` if Cancel.  
+
 **Example:**
 ```basic
 If ConfirmDialog("Do you want to save?", "Confirmation") Then
-    ' ...
+    ' Action if user clicked OK
+Else
+    ' Action if user clicked Cancel
 End If
 ```
 
@@ -55,12 +57,14 @@ End If
 Dialog box with **Yes** and **No**.  
 ```basic
 QuestionDialog(pQuestion As String, Optional pDialogTitle As String) As Boolean
-``]
+```
 **Return:** `True` if Yes; `False` if No.  
 **Example:**
 ```basic
 If QuestionDialog("Print now?", "Question") Then
-    ' ...
+    ' Action if user clicked Yes
+Else
+    ' Action if user clicked No
 End If
 ```
 
@@ -82,11 +86,11 @@ Loop
 ---
 
 #### Dialog  
-Internal utility function used by the three above to build the MessageBox with the proper icon.  
-You usually won’t call `Dialog` directly — use `ConfirmDialog`, `QuestionDialog`, or `RetryDialog`.
+Internal utility function used by the three functions above to build the MessageBox with the appropriate icon.  
+You usually don’t call `Dialog` directly — use `ConfirmDialog`, `QuestionDialog`, or `RetryDialog`.
 
 #### Dialog3  
-Utility variant of `Dialog` for additional scenarios/icons. Direct use is not needed in most cases.
+Utility variant of `Dialog` for additional scenarios/icons. Direct use is not necessary in most cases.
 
 ---
 
@@ -109,19 +113,19 @@ Cell("Sheet1","B1").String = "Hello"
 ---
 
 #### Sheet
-Returns a reference to a given sheet whose name is provided in the `pSheet` parameter.  
+Returns a reference to a specific sheet whose name is provided in the `pSheet` parameter.  
 ```basic
 Sheet(pSheet As String) As Object
 ```
 **Example:**
 ```basic
 Dim s As Object
-s = Sheet("Sheet1")
+s = Sheet("Sheet1") 
 ```
-In this example, variable `s` will reference "Sheet1", letting you work with that object as needed.
+In this example, the variable `s` will hold a reference to "Sheet1". You can then work with that object as needed.
 
 #### Row
-Returns a reference to a given row, according to the `pRowIndex` parameter.  
+Returns a reference to a specific row, according to the `pRowIndex` parameter.  
 ```basic
 Row(pSheet As String, pRowIndex As Long) As Object
 ```
@@ -149,12 +153,12 @@ SelectCell(pSheet As String, pCell As String)
 ```
 **Example:**
 ```basic
-SelectCell("Sheet1","C3")
+SelectCell("Sheet1","C3") 
 ```
 In this example, cell C3 in "Sheet1" will be selected.
 
 #### SelectRow
-Selects an entire **row** in a given sheet.  
+Selects an entire **row** in a given sheet.   
 ```basic
 SelectRow(pSheet As String, pRowIndex As Long)
 ```
@@ -174,27 +178,27 @@ CreateSheet("Report")
 #### RemoveSheet
 Removes an existing sheet by name.  
 ```basic
-RemoveSheet(pName As String)
+RemoveSheet(pName As String) 
 ```
 
 **Example:**
 ```basic
 RemoveSheet("Sheet1")
 ```
-In this example, "Sheet1" will be removed from the project.
+In this example, "Sheet1" will be removed from the project. 
 
 ---
 
 #### FindTextInCell
-Searches for text within a **cell**; returns `True` if it contains the substring.  
+Searches for text within a **cell**; returns `True` if the substring is found.  
 ```basic
 FindTextInCell(pText As String, pCell As String) As Boolean
 ```
 **Example:**
 ```basic
-If FindTextInCell("OK","C5") Then ... End If
+If FindTextInCell("OK","C5") Then ... End If 
 ```
-Here, the macro searches for the text "OK" inside cell C5. If found, it runs the code within the condition.
+In this case, the macro searches for the text "OK" inside cell C5. If found, it executes whatever is inside the condition.
 
 #### FindTextInColumn
 Searches for text across an entire **column** (in the given sheet).  
@@ -203,9 +207,9 @@ FindTextInColumn(pSheet As String, pColIndex As Long, pText As String) As Boolea
 ```
 **Example:**
 ```basic
-If FindTextInColumn("Sheet1", 0, "Customer") Then ... End If
+If FindTextInColumn("Sheet1", 0, "Customer") Then ... End If 
 ```
-Here, the macro searches for the word "Customer" inside "Sheet1" specifically in the first column (0 → column A, i.e., the first column).
+Here, the macro searches for the word "Customer" inside "Sheet1", specifically in the first column (0 → column A, i.e., the first column).
 
 ---
 
@@ -256,7 +260,7 @@ InsertCellNote("Sheet1","D4","Attention: estimated value")
 ```
 
 #### RemoveCellNote
-Removes a cell’s note.  
+Removes the cell note.  
 ```basic
 RemoveCellNote(pSheet As String, pCell As String)
 ```
@@ -356,7 +360,7 @@ ChangeFontFormat(pSheet As String, pRange As String, pBold As Boolean, _
 **Example:** `ChangeFontFormat("Sheet1","B2:B10", True, True, False)`
 
 #### CreateStripedLines
-Creates **zebra lines** (alternating stripes) in a range.  
+Creates striped (alternating color) rows within a specified range on a worksheet
 ```basic
 CreateStripedLines(pSheet As String, pRange As String, _
                    Optional pColor1 As Long, Optional pColor2 As Long, _
@@ -399,7 +403,7 @@ AnimateFontSize(pSheet As String, pRange As String, _
 AnimateFontSize("Sheet1","A1", 10, 16, 6, 60)
 ```
 
-In this example, cell A1 on "Sheet1" will animate from size 10 to size 16, in 6 steps, with a 60 ms delay per step.
+In this example, cell A1 in "Sheet1" will animate from size 10 to size 16, in 6 steps, with a 60 ms delay.
 
 #### AnimateFontColor
 Animates **font color** (interpolating between two colors).  
@@ -412,17 +416,17 @@ AnimateFontColor(pSheet As String, pRange As String, _
 ```basic
 AnimateFontColor("Sheet1", "B2:B10", "gray", "blue")
 ```
-In this example, the cell range (B2:B10) receives an animation where the font starts gray and transitions to blue.
+In this example, the cell range (B2:B10) receives an animation in which the font initially appears gray and transitions to blue. 
 
 #### ChangeFont (animation)
-Animated shortcut to change the font family with a gradual effect.  
+Animated shortcut to change the font with a gradual effect.  
 ```basic
 ChangeFont(pSheet As String, pRange As String, pFamily As String, _
            Optional pSteps As Integer, Optional pDelayMs As Long)
 ```
 
 #### ToggleCellColor
-Creates an animation where the **cell background color** keeps toggling between two colors N times. By default, it repeats 5 times.
+Creates an animation in which the **cell background color** alternates between two colors N times. By default, it repeats 5 times.
 
 ```basic
 ToggleCellColor(pSheet As String, pRange As String, _
@@ -433,7 +437,7 @@ ToggleCellColor(pSheet As String, pRange As String, _
 ```basic 
 ToggleCellColor("Sheet1","A1", "yellow", "red", 10)
 ```
-In this example, the background color of cell A1 toggles between yellow and red 10 times. At the end, it remains set to the last color provided, i.e., red.
+In this example, the background color of cell A1 alternates between yellow and red 10 times. At the end, it remains set to the last color provided, i.e., red.
 
 ---
 
@@ -441,6 +445,7 @@ In this example, the background color of cell A1 toggles between yellow and red 
 
 #### CreateTemplateSheet
 Quickly creates template sheets (names and numbering).  
+
 ```basic
 CreateTemplateSheet(pOption As String, Optional pQty As Integer)
 ```
@@ -456,9 +461,11 @@ CreateTemplateSheet("monthly", 12)
 
 #### GetXMLContent
 Fetches **XML** content and assigns it to a given cell.  
+
 ```basic
 GetXMLContent(pUrl As String, pTag As String) As String
 ```
+ 
 **Example:**
 ```basic
 Dim value As String
@@ -466,4 +473,4 @@ value = GetXMLContent("https://my-server/api.xml", "/price/test")
 ```
 
 ## Credits
-Free software created by Marcos Cabanas Esteves and Thiago Andrade. The project can be used at no cost and is open to contributions from anyone who wishes to participate.
+Free software created by Marcos Cabanas Esteves and Thiago Andrade. The project can be used free of charge and is open to contributions from anyone who wishes to participate.

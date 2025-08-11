@@ -34,7 +34,6 @@ Curso gratuito: [Playlist no YouTube](https://www.youtube.com/playlist?list=PLw7
 ## Funcionalidades
 
 ### Funções de Diálogo
-**Arquivo:** `Dialogs.xba`
 
 #### ConfirmDialog
 Caixa de diálogo com **OK** e **Cancelar**.  
@@ -42,10 +41,13 @@ Caixa de diálogo com **OK** e **Cancelar**.
 ConfirmDialog(pQuestion As String, Optional pDialogTitle As String) As Boolean
 ```
 **Retorno:** `True` se OK; `False` se Cancelar.  
+
 **Ex.:**
 ```basic
 If ConfirmDialog("Deseja salvar?", "Confirmação") Then
-    ' ...
+    ' Ação se usuário clicou em ok
+else
+    ' Ação se usuário clicou em Cancelar
 End If
 ```
 
@@ -60,7 +62,9 @@ QuestionDialog(pQuestion As String, Optional pDialogTitle As String) As Boolean
 **Ex.:**
 ```basic
 If QuestionDialog("Imprimir agora?", "Pergunta") Then
-    ' ...
+    ' Ação se usuário clicou em Sim
+else
+    ' Ação se usuário clicou em Não
 End If
 ```
 
@@ -473,4 +477,4 @@ valor = GetXMLContent("https://meu-servidor/api.xml", "/preco/teste")
 
 
 ## Créditos
- um software livre criado por Marcos Cabanas Esteves e Thiago Andrade. O projeto pode ser usado gratuitamente, sem custos, e é aberto à participação de todos que desejarem contribuir.
+Um software livre criado por Marcos Cabanas Esteves e Thiago Andrade. O projeto pode ser usado gratuitamente, sem custos, e é aberto à participação de todos que desejarem contribuir.
