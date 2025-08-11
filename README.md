@@ -9,7 +9,7 @@ This repository contains the source code for the LibreMacro library, which aims 
 
 # Manual
 
-The library is organized as a collection of utility functions. Descriptions and details can be found in the document "manual.pdf".
+The library is organized as a collection of utility functions. Descriptions and details can be found in the <a href="manual_en.md">English manual</a>.
 
 # Developers
 
