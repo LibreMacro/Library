@@ -9,7 +9,7 @@ Este repositório contém o código-fonte da biblioteca LibreMacro, que tem como
 
 # Manual
 
-A biblioteca está organizada como uma coleção de funções utilitárias. Descrições e detalhes podem ser encontrados no <a href="manual_pt.md">manual em português</a>.
+A biblioteca está organizada como uma coleção de funções utilitárias. Descrições e detalhes podem ser encontrados no <a href="docs/manual_pt.md">manual em português</a>.
 
 # Desenvolvedores
 
