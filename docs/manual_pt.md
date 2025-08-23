@@ -477,12 +477,23 @@ Diante de um XML contendo produtos em estoque (https://libremacro.github.io/Libr
 
 Veja algumas formas de pegar as informações provenientes deste XML e atribuir às células em uma planilha:
 
-a) Pegando o nome da loja
+a) Pegando o nome da loja e atribuíndo à célula A2 da "Planilha1"
 
 ```basic
 Cell("Planilha1","A2").String = GetXMLContent("https://libremacro.github.io/Library/examples/store.xml", "/store/name")
 ```
 
+b) Pegando o endereço da loja e atribuíndo à célula C2 da "Planilha1"
+
+```basic
+Cell("Planilha1","C2").String = GetXMLContent("https://libremacro.github.io/Library/examples/store.xml", "/store/address")
+```
+
+c) Pegando o nome do primeiro produto e atribuíndo à célula A4 da "Planilha1"
+
+```basic
+Cell("Planilha1","A4").String = GetXMLContent("https://libremacro.github.io/Library/examples/store.xml", "/store/stock/product[1]/name")
+```
 
 
 ## Créditos
