@@ -1,10 +1,3 @@
----
-layout: default
-title: English Manual
-permalink: /manual_en
----
-
-
 # LibreMacro – Complete Manual
 
 ## Table of Contents
