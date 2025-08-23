@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<store>
+  <store_name>Everyday Market</store_name>
+  <address>123 Main Street, Springfield</address>
+  <stock>
+    <product>
+      <name>Rice</name>
+      <brand>GoodGrain</brand>
+      <price>2.50</price>
+      <description>White long-grain rice, 1kg package.</description>
+    </product>
+    <product>
+      <name>Potato</name>
+      <brand>FreshFarm</brand>
+      <price>1.20</price>
+      <description>Organic yellow potatoes, 2kg bag.</description>
+    </product>
+    <product>
+      <name>Tomato</name>
+      <brand>GreenValley</brand>
+      <price>3.10</price>
+      <description>Red vine tomatoes, 500g pack.</description>
+    </product>
+  </stock>
+</store>
