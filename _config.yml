@@ -1,2 +1,5 @@
 title: LibreMacro
 theme: jekyll-theme-cayman
+url: "https://libremacro.github.io"
+baseurl: "/Library"   # importante para project pages
+markdown: kramdown

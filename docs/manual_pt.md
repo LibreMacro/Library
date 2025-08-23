@@ -1,3 +1,9 @@
+---
+layout: default
+title: Manual (PT)
+permalink: /manual_pt
+---
+
 # LibreMacro – Manual Completo
 
 ## Índice
