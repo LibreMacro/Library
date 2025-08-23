@@ -473,14 +473,14 @@ GetXMLContent(pUrl As String, pTag As String) As String
 
 Diante de um XML contendo produtos em estoque (https://libremacro.github.io/Library/examples/store.xml), cuja estrutura reproduzimos abaixo:
 
-<img href="../examples/img/xml_ex_store.jpg">
+<img src="../examples/img/xml_ex_store.jpg">
 
-Veja algumas formas de pegar as informações provenientes deste XML e atribuir à células em uma planilha:
+Veja algumas formas de pegar as informações provenientes deste XML e atribuir às células em uma planilha:
 
+a) Pegando o nome da loja
 
 ```basic
-Dim valor As String
-valor = GetXMLContent("https://meu-servidor/api.xml", "/preco/teste")
+Cell("Planilha1","A2").String = GetXMLContent("https://libremacro.github.io/Library/examples/store.xml", "/store/name")
 ```
 
 
