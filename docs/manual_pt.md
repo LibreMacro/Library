@@ -469,11 +469,20 @@ Busca conteúdo **XML** e atribui a determinada célula.
 GetXMLContent(pUrl As String, pTag As String) As String
 ```
  
-**Ex.:**
+**Ex 1: Loja contendo produtos em estoque**
+
+Diante de um XML contendo produtos em estoque (https://libremacro.github.io/Library/examples/store.xml), cuja estrutura reproduzimos abaixo:
+
+<img href="../examples/img/xml_ex_store.jpg">
+
+Veja algumas formas de pegar as informações provenientes deste XML e atribuir à células em uma planilha:
+
+
 ```basic
 Dim valor As String
 valor = GetXMLContent("https://meu-servidor/api.xml", "/preco/teste")
 ```
+
 
 
 ## Créditos

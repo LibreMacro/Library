@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <store>
-  <store_name>Everyday Market</store_name>
+  <name>Everyday Market</name>
   <address>123 Main Street, Springfield</address>
   <stock>
     <product>
