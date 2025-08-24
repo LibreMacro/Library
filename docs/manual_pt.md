@@ -473,7 +473,7 @@ GetXMLContent(pUrl As String, pTag As String) As String
 
 Diante de um XML contendo produtos em estoque (https://libremacro.github.io/Library/examples/store.xml), cuja estrutura reproduzimos abaixo:
 
-<img src="../examples/img/xml_ex_store.jpg">
+<img src="../examples/img/xml_store.jpg">
 
 Veja algumas formas de pegar as informações provenientes deste XML e atribuir às células em uma planilha:
 
