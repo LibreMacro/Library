@@ -447,16 +447,52 @@ Neste exemplo, a cor de fundo da célula A1 fica alterando entre amarelho e verm
 
 
 #### CreateTemplateSheet
-Cria planilhas‑modelo de forma rápida (nomes e numeração).  
+
+Gera rapidamente planilhas-modelo que são úteis para **mockar dados**, testar fórmulas, gráficos e fluxos.
+
+Obs: Os dados são criados na planilhas `uf`, `names` ou `students` (dependendo da opção escolhida). Caso já existam planilhas com este nome, os dados de modelo não serão criados.
+
+---
+
+##### Sintaxe
+```basic
+Sub CreateTemplateSheet(pOption As String, Optional pLang As String, Optional pQty As Integer)
+```
+
+**Ex.:** 
 
 ```basic
-CreateTemplateSheet(pOption As String, Optional pQty As Integer)
+CreateTemplateSheet("uf","pt")
 ```
-**Ex.:**
+Cria uma planilha chamada "uf" contendo uma lista de estados do Brasil.
+
 ```basic
-' Cria 12 planilhas: Jan..Dez ou “Página 1..n”, dependente da opção
-CreateTemplateSheet("mensal", 12)
+CreateTemplateSheet("uf","us")
 ```
+Cria uma planilha chamada "uf" contendo uma lista de estados dos Estados Unidos.
+
+```basic
+CreateTemplateSheet("names","pt", 50)
+```
+Cria uma planilha chamada "names" contendo uma lista de 50 nomes, tendo por referência nomes usuais no Brasil.
+
+
+```basic
+CreateTemplateSheet("names","us", 300)
+```
+Cria uma planilha chamada "names" contendo uma lista de 300 nomes, tendo por referência nomes usuais nos Estados Unidos.
+
+
+```basic
+CreateTemplateSheet("students","pt", 70)
+```
+Cria uma planilha chamada "students" contendo uma lista de 70 estudantes, contendo nome, curso e estado de origem. A criação da planilha tem por referência nomes usuais no Brasil.
+
+```basic
+CreateTemplateSheet("students","us", 110)
+```
+Cria uma planilha chamada "students" contendo uma lista de 110 estudantes, contendo nome, curso e estado de origem. A criação da planilha tem por referência nomes usuais nos Estados Unidos.
+
 
 ---
 

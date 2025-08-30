@@ -140,6 +140,43 @@ Dim saldo As Long
 
 End Function
 
+Private Function GetSystemPathSeparator() As String
+    ' Heurística simples: URL do perfil usa "/" no mac/linux; no Windows usamos "\"
+    If InStr(1, LCase$(Environ("OS")), "windows") > 0 Then
+        GetSystemPathSeparator = "\"
+    Else
+        GetSystemPathSeparator = "/"
+    End If
+End Function
+
+Private Function JoinPath(folder As String, name As String) As String
+    Dim sep As String : sep = GetSystemPathSeparator()
+    If Right$(folder,1) = sep Then
+        JoinPath = folder & name
+    Else
+        JoinPath = folder & sep & name
+    End If
+End Function
+
+
+Private Function GetUserDocumentsDir() As String
+    Dim home As String, isWin As Boolean
+    isWin = InStr(1, LCase$(GetSystemPathSeparator()), "\") > 0
+
+    If isWin Then
+        ' Windows: %USERPROFILE%\Documents (padrão)
+        home = Environ("USERPROFILE")
+        If Len(home) = 0 Then home = Environ("HOMEDRIVE") & Environ("HOMEPATH")
+        GetUserDocumentsDir = JoinPath(home, "Documents")
+    Else
+        ' macOS/Linux: $HOME/Documents
+        home = Environ("HOME")
+        If Len(home) = 0 Then home = GetHomeFromProfile()
+        GetUserDocumentsDir = JoinPath(home, "Documents")
+    End If
+End Function
+
+
 ' Reference: Adaptation from
 ' https://ask.libreoffice.org/t/lo-calc-basic-macro-how-to-work-with-integers/23049
 function ToFloor( v as Double ) as Long
@@ -219,6 +256,29 @@ Function NumberTransformation(pNum1 As Integer, pNum2 As Integer, pOperType As S
 
 End Function
 
+Function GetPythonUserScriptsPath As String
+    Dim ps As Object
+    Dim sPath As String
+    
+    ' Acessa o objeto de configuração de caminho do usuário
+    ps = createUnoService("com.sun.star.util.PathSettings")
+    
+    ' Obtém o caminho do diretório de usuário e anexa os subdiretórios dos scripts Python
+    sPath = ps.UserConfig & "/Scripts/python"
+    
+    ' Exibe o caminho
+    GetPythonUserScriptsPath = sPath
+End Function
+
+
+Function SheetExists(ByVal sName As String) As Boolean
+    On Error GoTo Nope
+    SheetExists = ThisComponent.Sheets.hasByName(sName)
+    Exit Function
+Nope:
+    SheetExists = False
+End Function
+
 'Function ValueWhenParameterIsMissing(pEntrada, pDefault, pValue)
 '
 '	if IsMissing(pEntrada) Then
@@ -230,7 +290,6 @@ End Function
 '	ValueWhenParameterIsMissing = vRetorno
 '
 'End Function
-
 
 
 
