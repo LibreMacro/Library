@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Connection" script:language="StarBasic" script:moduleType="normal">&apos;GetXMLContent: change the font size of a cell or range of cells
+&apos;pUrl: Link of the webservice
+&apos;pTag: Tag that will have its content purchased
+&apos;Reference: https://ask.libreoffice.org/t/use-of-webservice-within-a-macro-in-libreoffice-6-0-1-1/31030/3
+Function GetXMLContent(pUrl as String, pTag as String) As String
+    On Error GoTo ErrorHandler
+
+    Dim funtionAccess As Object
+    Dim xmlString As String
+
+    functionAccess = createUnoService(&quot;com.sun.star.sheet.FunctionAccess&quot;)
+    xmlString = functionAccess.callFunction(&quot;WEBSERVICE&quot;,Array(pUrl)) 
+    xmlString = functionAccess.callFunction(&quot;FILTERXML&quot;, array(xmlString, pTag)) 
+    GetXMLContent = xmlString
+
+    Exit Function
+	ErrorHandler:
+    GetXMLContent = &quot;Error &quot; &amp; Err
+End Function
+
+&apos; getJSONContent Python
+public Function GetJSONContent(pUrl As String, pPath As String, Optional pHeaders As String) As String
+    On Error GoTo ErrHandler
+      
+    Dim sp As Object, script As Object, args(2) As Variant
+    sp = ThisComponent.getScriptProvider()
+    
+    script = sp.getScript(&quot;vnd.sun.star.script:LM_CONNECTION.py$get_value?language=Python&amp;location=user&quot;)
+    
+    args(0) = pUrl
+    args(1) = pPath
+    If IsMissing(pHeaders) Then
+        args(2) = &quot;&quot;
+    Else
+        args(2) = pHeaders
+    End If
+    
+    GetJSONContent = script.invoke(args(), Array(), Array())
+    Exit Function    
+ErrHandler:
+    GetJSONContent = &quot;#BASIC_ERR &quot; &amp; Err &amp; &quot;: &quot; &amp; Error$
+End Function
+
+
+</script:module>

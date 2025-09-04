@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Templates" script:language="StarBasic" script:moduleType="normal">REM  *****  BASIC  *****
+
+&apos;CreateTemplateSheet: Quickly generates template sheets with Brazilian states (UFs), random names, and (optionally) student data (State + Course).
+&apos;Useful for mocking data, testing formulas, charts, and workflows.
+&apos;
+&apos;pOption: Type of template to create (text) → &quot;uf&quot;, &quot;names&quot; or &quot;students&quot;
+&apos;         &quot;uf&quot;       : Creates a sheet with the U.S. states (or BR states in pt)
+&apos;         &quot;names&quot;    : Creates a sheet with random unique first+last names
+&apos;         &quot;students&quot; : Same as &quot;names&quot;, but also adds random &quot;Unit&quot; (State) and &quot;Course&quot;
+&apos;pQty: Number of rows to generate. Default = 100
+&apos;pLang: Language for the generated template sheets
+&apos;         &quot;pt&quot; : Uses Brazilian names, surnames, courses, and UFs
+&apos;         &quot;en&quot; : Uses U.S. names, surnames, courses, and States
+Sub CreateTemplateSheet(pOption as String, Optional pLang as String, Optional pQty as Integer)
+dim vLang as String
+Dim firstName(1 to 100) As String
+Dim lastName(1 to 50) As String
+dim course(1 to 20) as String
+dim uf (1 to 27) as String
+dim vNewName as String
+dim vQty as Integer
+Dim vNumberName as Integer
+Dim vNumberLastName as Integer
+Dim vNameTitle as String
+Dim vCouseTitle as String
+Dim vCityTitle as String
+
+if IsMissing(pQty) Then
+	vQty = 100	
+Else
+	vQty = pQty
+end If
+	
+if IsMissing(pLang) Then
+	vLang = &quot;pt&quot;	
+Else
+	vLang = pLang
+end If
+
+
+if vLang = &quot;pt&quot; then
+
+	firstName = Array(&quot;Adriana&quot;,&quot;Adriano&quot;,&quot;Alan&quot;,&quot;Albano&quot;,&quot;Aldo&quot;,&quot;Alexandre&quot;,&quot;Alice&quot;,&quot;Alice&quot;,&quot;Aline&quot;,&quot;Ana&quot;,&quot;Anderson&quot;,&quot;André&quot;,&quot;Andressa&quot;,&quot;Angélica&quot;,&quot;Antônia&quot;,&quot;Antônio&quot;,&quot;Arthur&quot;,&quot;Auri&quot;,&quot;Barbara&quot;,&quot;Beatriz&quot;,&quot;Benício&quot;,&quot;Bernardo&quot;,&quot;Caio&quot;,&quot;Camila&quot;,&quot;Carina&quot;,&quot;Carlos&quot;,&quot;Carolina&quot;,&quot;Cecília&quot;,&quot;Cecília&quot;,&quot;Celso&quot;,&quot;Cícero&quot;,&quot;Cláudia&quot;,&quot;Cláudio&quot;,&quot;Daniel&quot;,&quot;Davi&quot;,&quot;Diana&quot;,&quot;Eduardo&quot;,&quot;Emanuel&quot;,&quot;Enzo Gabriel&quot;,&quot;Fabiana&quot;,&quot;Fábio&quot;,&quot;Felipe&quot;,&quot;Fernanda&quot;,&quot;Fernando&quot;,&quot;Francisco&quot;,&quot;Gabriel&quot;,&quot;Gael&quot;,&quot;Gilberto&quot;,&quot;Gustavo&quot;,&quot;Heitor&quot;,&quot;Helena&quot;,&quot;Heloísa&quot;,&quot;Hugo&quot;,&quot;Isabella&quot;,&quot;Jaqueline&quot;,&quot;Jeferson&quot;,&quot;João&quot;,&quot;João&quot;,&quot;João Miguel&quot;,&quot;Júlia&quot;,&quot;Júlio&quot;,&quot;Juracy&quot;,&quot;Larissa&quot;,&quot;Laura&quot;,&quot;Leila&quot;,&quot;Leonardo&quot;,&quot;Letícia&quot;,&quot;Lívia&quot;,&quot;Lorena&quot;,&quot;Lorena&quot;,&quot;Lorenzo&quot;,&quot;Luan&quot;,&quot;Luana&quot;,&quot;Luana&quot;,&quot;Lucas&quot;,&quot;Luiz&quot;,&quot;Luiza&quot;,&quot;Manuel&quot;,&quot;Manuela&quot;,&quot;Marcelo&quot;,&quot;Marcos&quot;,&quot;Maria Cecília&quot;,&quot;Maria Clara&quot;,&quot;Maria Eduarda&quot;,&quot;Maria Júlia&quot;,&quot;Mariana&quot;,&quot;Marina&quot;,&quot;Maurício&quot;,&quot;Michelle&quot;,&quot;Miguel&quot;,&quot;Patrícia&quot;,&quot;Pedro&quot;,&quot;Samuel&quot;,&quot;Sophia&quot;,&quot;Theo&quot;,&quot;Thiago&quot;,&quot;Valentina&quot;,&quot;Vanessa&quot;,&quot;Viviane&quot;,&quot;Zenaide&quot;)
+	lastName = Array(&quot;Albuquerque&quot;,&quot;Almeida&quot;,&quot;Alves&quot;,&quot;Andrade&quot;,&quot;Barbosa&quot;,&quot;Barros&quot;,&quot;Barroso&quot;,&quot;Batista&quot;,&quot;Borges&quot;,&quot;Cabanas&quot;,&quot;Campos&quot;,&quot;Cardoso&quot;,&quot;Castro&quot;,&quot;Cavalcanti&quot;,&quot;Cista&quot;,&quot;Conceição&quot;,&quot;Costa&quot;,&quot;Cremer&quot;,&quot;Dias&quot;,&quot;Duarte&quot;,&quot;Esteves&quot;,&quot;Fernandes&quot;,&quot;Ferreira&quot;,&quot;Freitas&quot;,&quot;Garcia&quot;,&quot;Gomes&quot;,&quot;Gonçalves&quot;,&quot;Lima&quot;,&quot;Lopes&quot;,&quot;Machado&quot;,&quot;Malheiros&quot;,&quot;Marques&quot;,&quot;Martins&quot;,&quot;Mendes&quot;,&quot;Miranda&quot;,&quot;Moraes&quot;,&quot;Moreira&quot;,&quot;Nascimento&quot;,&quot;Nunes&quot;,&quot;Oliveira&quot;,&quot;Pereira&quot;,&quot;Ribeiro&quot;,&quot;Rodrigues&quot;,&quot;Santana&quot;,&quot;Santos&quot;,&quot;Silva&quot;,&quot;Soares&quot;,&quot;Souza&quot;,&quot;Teixeira&quot;,&quot;Vieira&quot;)
+	course = Array(&quot;Arquitetura&quot;,&quot;Astronomia&quot;,&quot;Biologia&quot;,&quot;Ciências Sociais&quot;,&quot;Direito&quot;, &quot;Educação Artísitca&quot;,&quot;Educação Física&quot;, &quot;Enfermagem&quot;,&quot;Engenharia&quot;,&quot;Física&quot;,&quot;História&quot;,&quot;Informática&quot;, &quot;Letras&quot;,&quot;Matemática&quot;, &quot;Medicina&quot;, &quot;Pedagogia&quot;, &quot;Psicologia&quot;, &quot;Química&quot;,&quot;Relações Internacionais&quot;,&quot;Serviço Social&quot;)
+	uf = Array(&quot;Acre&quot;,&quot;Alagoas&quot;,&quot;Amapá&quot;,&quot;Amazonas&quot;,&quot;Bahia&quot;,&quot;Ceará&quot;,&quot;Espírito Santo&quot;,&quot;Goiás&quot;,&quot;Maranhão&quot;,&quot;Mato Grosso&quot;,&quot;Mato Grosso do Sul&quot;,&quot;Minas Gerais&quot;,&quot;Pará&quot;,&quot;Paraíba&quot;,&quot;Paraná&quot;,&quot;Pernambuco&quot;,&quot;Piauí&quot;,&quot;Rio de Janeiro&quot;,&quot;Rio Grande do Norte&quot;,&quot;Rio Grande do Sul&quot;,&quot;Rondônia&quot;,&quot;Roraima&quot;,&quot;Santa Catarina&quot;,&quot;São Paulo&quot;,&quot;Sergipe&quot;,&quot;Tocantins&quot;,&quot;Distrito Federal&quot;)
+	vNameTitle = &quot;Nome&quot;
+	vCourseTitle = &quot;Curso&quot;
+	vCityTitle = &quot;Unidades Federativas (BR)&quot;
+
+else
+
+	firstName = Array(&quot;James&quot;,&quot;John&quot;,&quot;Robert&quot;,&quot;Michael&quot;,&quot;William&quot;,&quot;David&quot;,&quot;Richard&quot;,&quot;Joseph&quot;,&quot;Thomas&quot;,&quot;Charles&quot;,&quot;Christopher&quot;,&quot;Daniel&quot;,&quot;Matthew&quot;,&quot;Anthony&quot;,&quot;Donald&quot;,&quot;Mark&quot;,&quot;Paul&quot;,&quot;Steven&quot;,&quot;Andrew&quot;,&quot;Joshua&quot;,&quot;Mary&quot;,&quot;Patricia&quot;,&quot;Jennifer&quot;,&quot;Linda&quot;,&quot;Elizabeth&quot;,&quot;Barbara&quot;,&quot;Susan&quot;,&quot;Jessica&quot;,&quot;Sarah&quot;,&quot;Karen&quot;,&quot;Lisa&quot;,&quot;Nancy&quot;,&quot;Betty&quot;,&quot;Margaret&quot;,&quot;Sandra&quot;,&quot;Ashley&quot;,&quot;Kimberly&quot;,&quot;Emily&quot;,&quot;Donna&quot;,&quot;Michelle&quot;,&quot;Carol&quot;,&quot;Amanda&quot;,&quot;Melissa&quot;,&quot;Deborah&quot;,&quot;Stephanie&quot;,&quot;Rebecca&quot;,&quot;Laura&quot;,&quot;Sharon&quot;,&quot;Cynthia&quot;,&quot;Kathleen&quot;,&quot;Amy&quot;,&quot;Angela&quot;,&quot;Anna&quot;,&quot;Ruth&quot;,&quot;Brenda&quot;,&quot;Pamela&quot;,&quot;Nicole&quot;,&quot;Katherine&quot;,&quot;Samantha&quot;,&quot;Christine&quot;,&quot;Janet&quot;,&quot;Maria&quot;,&quot;Heather&quot;,&quot;Diane&quot;,&quot;Julie&quot;,&quot;Joyce&quot;,&quot;Victoria&quot;,&quot;Kelly&quot;,&quot;Christina&quot;,&quot;Lauren&quot;,&quot;Joan&quot;,&quot;Evelyn&quot;,&quot;Olivia&quot;,&quot;Emma&quot;,&quot;Sophia&quot;,&quot;Isabella&quot;,&quot;Mia&quot;,&quot;Charlotte&quot;,&quot;Amelia&quot;,&quot;Harper&quot;,&quot;Evelyn&quot;,&quot;Abigail&quot;,&quot;Emily&quot;,&quot;Madison&quot;,&quot;Elizabeth&quot;,&quot;Sofia&quot;,&quot;Avery&quot;,&quot;Ella&quot;,&quot;Scarlett&quot;,&quot;Grace&quot;,&quot;Chloe&quot;,&quot;Benjamin&quot;,&quot;Lucas&quot;,&quot;Mason&quot;,&quot;Ethan&quot;,&quot;Alexander&quot;,&quot;Henry&quot;,&quot;Jacob&quot;,&quot;Jackson&quot;,&quot;Levi&quot;,&quot;Sebastian&quot;)
+	lastName = Array(&quot;Smith&quot;,&quot;Johnson&quot;,&quot;Williams&quot;,&quot;Brown&quot;,&quot;Jones&quot;,&quot;Garcia&quot;,&quot;Miller&quot;,&quot;Davis&quot;,&quot;Rodriguez&quot;,&quot;Martinez&quot;,&quot;Hernandez&quot;,&quot;Lopez&quot;,&quot;Gonzalez&quot;,&quot;Wilson&quot;,&quot;Anderson&quot;,&quot;Thomas&quot;,&quot;Taylor&quot;,&quot;Moore&quot;,&quot;Jackson&quot;,&quot;Martin&quot;,&quot;Lee&quot;,&quot;Perez&quot;,&quot;Thompson&quot;,&quot;White&quot;,&quot;Harris&quot;,&quot;Sanchez&quot;,&quot;Clark&quot;,&quot;Ramirez&quot;,&quot;Lewis&quot;,&quot;Robinson&quot;,&quot;Walker&quot;,&quot;Young&quot;,&quot;Allen&quot;,&quot;King&quot;,&quot;Wright&quot;,&quot;Scott&quot;,&quot;Torres&quot;,&quot;Nguyen&quot;,&quot;Hill&quot;,&quot;Flores&quot;,&quot;Green&quot;,&quot;Adams&quot;,&quot;Nelson&quot;,&quot;Baker&quot;,&quot;Hall&quot;,&quot;Rivera&quot;,&quot;Campbell&quot;,&quot;Mitchell&quot;,&quot;Carter&quot;,&quot;Roberts&quot;)
+	course = Array(&quot;Business Administration&quot;,&quot;Computer Science&quot;,&quot;Nursing&quot;,&quot;Psychology&quot;,&quot;Biology&quot;,&quot;Education&quot;,&quot;Accounting&quot;,&quot;Marketing&quot;,&quot;Mechanical Engineering&quot;,&quot;Electrical Engineering&quot;,&quot;Political Science&quot;,&quot;Economics&quot;,&quot;Sociology&quot;,&quot;History&quot;,&quot;English Literature&quot;,&quot;Chemistry&quot;,&quot;Mathematics&quot;,&quot;Criminal Justice&quot;,&quot;Communication Studies&quot;,&quot;Public Health&quot;,&quot;Civil Engineering&quot;,&quot;Philosophy&quot;,&quot;Art History&quot;,&quot;Environmental Science&quot;,&quot;Finance&quot;,&quot;Journalism&quot;,&quot;Anthropology&quot;,&quot;International Relations&quot;,&quot;Physics&quot;,&quot;Social Work&quot;)
+	uf = Array(&quot;Alabama&quot;,&quot;Alaska&quot;,&quot;Arizona&quot;,&quot;Arkansas&quot;,&quot;California&quot;,&quot;Colorado&quot;,&quot;Connecticut&quot;,&quot;Delaware&quot;,&quot;Florida&quot;,&quot;Georgia&quot;,&quot;Hawaii&quot;,&quot;Idaho&quot;,&quot;Illinois&quot;,&quot;Indiana&quot;,&quot;Iowa&quot;,&quot;Kansas&quot;,&quot;Kentucky&quot;,&quot;Louisiana&quot;,&quot;Maine&quot;,&quot;Maryland&quot;,&quot;Massachusetts&quot;,&quot;Michigan&quot;,&quot;Minnesota&quot;,&quot;Mississippi&quot;,&quot;Missouri&quot;,&quot;Montana&quot;,&quot;Nebraska&quot;,&quot;Nevada&quot;,&quot;New Hampshire&quot;,&quot;New Jersey&quot;,&quot;New Mexico&quot;,&quot;New York&quot;,&quot;North Carolina&quot;,&quot;North Dakota&quot;,&quot;Ohio&quot;,&quot;Oklahoma&quot;,&quot;Oregon&quot;,&quot;Pennsylvania&quot;,&quot;Rhode Island&quot;,&quot;South Carolina&quot;,&quot;South Dakota&quot;,&quot;Tennessee&quot;,&quot;Texas&quot;,&quot;Utah&quot;,&quot;Vermont&quot;,&quot;Virginia&quot;,&quot;Washington&quot;,&quot;West Virginia&quot;,&quot;Wisconsin&quot;,&quot;Wyoming&quot;,&quot;District of Columbia&quot;)
+	vNameTitle = &quot;Name&quot;
+	vCourseTitle = &quot;Course&quot;
+	vCityTitle = &quot;City&quot;
+
+end if
+
+	
+	if pOption = &quot;uf&quot; and not SheetExists( &quot;uf&quot;) then
+	
+		CreateSheet(pOption)
+	
+			For i= 2 To UBound(uf)+2 Step 1
+			
+				Cell(pOption, REF(i, 1)).String = uf ( i - 2 )
+				
+			next
+			
+			Cell (pOption, &quot;A1&quot;).String = vCityTitle
+			
+			SortAsc(pOption, &quot;A2:A30&quot;,1)
+			
+			sheet(pOption).getColumns().getByIndex(0).OptimalWidth = True
+	
+	end if
+
+
+	if (pOption = &quot;names&quot; or pOption = &quot;students&quot;) and not (SheetExists(&quot;names&quot;) or SheetExists(&quot;students&quot;))  then
+	
+		CreateSheet(pOption)
+		
+		Cell(pOption, &quot;A1&quot;).String = vNameTitle
+
+		For i= 2 To vQty+1 Step 1
+		
+			Do 
+	   		
+	   			vNumberName = ( Int ( Rnd * 99) + 1 )
+				vNumberLastName = ( Int ( Rnd * 49) + 1 )
+				vNewName = firstName( vNumberName ) &amp; &quot; &quot; &amp; lastName( vNumberLastName)
+		
+			Loop until not FindTextInColumn(vNewName, pOption, 1, i+1)
+		
+			Cell(pOption, REF(i, 1)).String = vNewName
+			
+		next
+		
+		SortAsc(pOption, &quot;A2:A10000&quot;, 1)		
+		
+		sheet(pOption).getColumns().getByIndex(0).OptimalWidth = True
+		
+	end if
+		
+	if pOption = &quot;students&quot; then
+	
+		Cell(pOption, &quot;B1&quot;).String = vCityTitle
+		Cell(pOption, &quot;C1&quot;).String = vCourseTitle
+		
+		For i= 2 To vQty Step 1
+	
+   			vNumberCourse = ( Int ( Rnd * 19) + 1 )
+   			
+   			vNumberUF =  ( Int ( Rnd * 26) + 1 )
+		
+			Cell(pOption, REF(i, 2)).String = uf ( vNumberUF )
+			Cell(pOption, REF(i, 3)).String = Course ( vNumberCourse )
+			
+		next
+			
+		sheet(pOption).getColumns().getByIndex(1).OptimalWidth = True
+		sheet(pOption).getColumns().getByIndex(2).OptimalWidth = True
+	
+	end if
+
+End Sub
+</script:module>

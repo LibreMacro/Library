@@ -1,17 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<description xmlns="http://openoffice.org/extensions/description/2006"
-             xmlns:xlink="http://www.w3.org/1999/xlink">
-  <identifier value="org.libremacro.library"/>
-  <version value="1.7.0"/>
-  <display-name>
-    <name lang="en">LibreMacro Library</name>
-    <name lang="pt">Biblioteca LibreMacro</name>
-  </display-name>
-  <publisher>
-    <name>Marcos C Esteves &amp Thiago Andrade</name>
-  </publisher>
-  <icon>
-    <default xlink:href="icons/icon_32.png"/>
-    <high-contrast xlink:href="icons/icon_16.png"/>
-  </icon>
+<?xml version='1.0' encoding='UTF-8'?>
+<description
+ xmlns="http://openoffice.org/extensions/description/2006"
+ xmlns:dep="http://openoffice.org/extensions/description/2006"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+    <identifier value="org.broffice.libremacro"/>
+    <icon>
+        <default xlink:href="icons/icon.jpg" />
+    </icon>
+    <version value="1.71"/>
+    <registration>
+        <simple-license  accept-by="admin" default-license-id="ID0" suppress-on-update="true" >
+        <license-text xlink:href="registration/license.txt" lang="en" license-id="ID0" />
+	</simple-license>
+    </registration>
+    <display-name>
+        <name>LibreMacro</name>
+    </display-name>
 </description>

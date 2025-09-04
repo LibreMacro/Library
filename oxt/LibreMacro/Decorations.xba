@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Decorations" script:language="StarBasic" script:moduleType="normal">
+&apos;ChangeFontSize: change the font size of a cell or range of cells
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells to generate the effect/formatting (text)
+&apos;pSize: Font size
+Sub ChangeFontSize (pSheet as String, pRange as String, pSize as Integer)
+
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet,pRange).CharHeight = pSize
+	end if
+	
+end sub
+
+&apos;ChangeFontColor: change the font color of a cell or range of cells
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells to generate the effect/formatting (text)
+&apos;pColor: Choose one of the options below or enter RGB code.
+&apos; 1) red (Default); 2) blue; 3) yellow; 4) green; 5) black
+&apos; example of orange color using RGB: pColor = &quot;RGB(255,165,0)&quot;
+Sub ChangeFontColor (pSheet as String, pRange as String, Optional pColor as String)
+dim c$(3)
+
+	If CheckIfHasSheet(pSheet) Then
+	
+		if IsMissing(pColor) then
+			c = getColorCode(&quot;red&quot;) 	&apos; Red (Default)		
+		else
+			c = getColorCode(pColor)
+		end if
+	
+		&apos;Sheet(pSheet).getCellRangeByName(pRange).CharColor = RGB(c(0),c(1),c(2))
+		Cell(pSheet,pRange).CharColor = RGB(c(0),c(1),c(2))
+
+	end if
+		
+end sub
+
+&apos;ChangeCellColor: change the background color of a cell or range of cells
+&apos;pSheet: Sheet name
+&apos;pRange: Range of cells to generate the effect/formatting (text)
+&apos;pColor: Choose one of the options below or enter RGB code.
+&apos; 1) red (Default); 2) blue; 3) yellow; 4) green; 5) black
+&apos; example of orange color using RGB: pColor = &quot;RGB(255,165,0)&quot;
+Sub ChangeCellColor (pSheet as String, pRange as String, Optional pColor as Variant)
+dim c$(3)
+dim r$(2)
+
+	If CheckIfHasSheet(pSheet) Then
+
+		if IsMissing(pColor) then
+			c = getColorCode(&quot;red&quot;) 	&apos; Red (Default)	
+		else
+			c = getColorCode(pColor)
+		end if
+		
+		Cell(pSheet, pRange).CellBackColor = RGB(c(0),c(1),c(2))
+		
+	end if
+
+end sub
+
+
+&apos;ChangeCellStyle: Change the style of a cell or range of cells
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells (text)
+&apos;pStyle: Name of the new style to be used (text)
+Sub ChangeCellStyle(pSheet as String, pCell as String, Optional pStyle As String)
+
+	if IsMissing(pStyle) then
+	
+		MsgBox(&quot;ChangeCellStyle: Please inform in the third parameter which style should be applied&quot;)
+	
+	else 
+
+		If CheckIfHasSheet(pSheet) Then
+			Cell(pSheet, pCell).CellStyle = pStyle
+		End if
+	
+	end if
+	
+End sub
+
+Sub ChangeRowStyle(pSheet as String, pRow as Integer, Optional pStyle As String)
+
+	if IsMissing(pStyle) then
+
+		MsgBox(&quot;ChangeRowStyle: Please inform in the third parameter which style should be applied&quot;)
+
+	else
+	
+		If CheckIfHasSheet(pSheet) Then
+			Row(pSheet, pRow).CellStyle = pStyle
+		End if
+		
+	end if
+	
+End sub
+
+Sub ChangeSheetStyle(pSheet as String, Optional pStyle As String)
+
+	if IsMissing(pStyle) then
+
+		MsgBox(&quot;ChangeSheetStyle: Please inform in the second parameter which style should be applied&quot;)
+
+	else
+	
+		If CheckIfHasSheet(pSheet) Then
+			Sheet(pSheet).CellStyle = pStyle
+		End if
+		
+	end if
+	
+End sub
+
+&apos;FormatFont: Highlight text with some specific formatting
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range das celulas para limpar o conteúdo (texto)
+&apos;pOption: Choose one of the options below.
+&apos; &quot;U&quot; - Underline
+&apos; &quot;B&quot; - Bold (Default)
+&apos; &quot;R&quot; - Red color and bold
+&apos; &quot;I&quot;   - Italic
+&apos; &quot;N&quot; - Removes formatting: underlines, bold and red color
+Sub ChangeFontFormat (pSheet as String, pRange as String, Optional pOption as Variant)
+dim vOption as String
+
+	If CheckIfHasSheet(pSheet) Then
+
+		if IsMissing(pOption) then
+			Sheet(pSheet).getCellRangeByName(pRange).CharWeight  = 150
+		else
+			vOption = UCase(pOption)
+		end if
+		
+		if vOption = &quot;B&quot; then
+			Cell(pSheet,pRange).CharWeight  = 150 
+		elseif  vOption = &quot;U&quot; then
+			Cell(pSheet,pRange).CharUnderline  = 1
+		elseif vOption = &quot;I&quot; then
+			Cell(pSheet,pRange).CharPosture = 2
+		elseif vOption = &quot;R&quot; then		
+			ChangeFontColor(pSheet,pRange, &quot;red&quot;)
+			Cell(pSheet,pRange).CharWeight = 150
+		elseif vOption = &quot;N&quot; then
+				Cell(pSheet,pRange).CharWeight  = 100
+				Cell(pSheet,pRange).CharPosture = 0
+				Cell(pSheet,pRange).CharUnderline  = 0
+				ChangeFontColor(pSheet,pRange, &quot;black&quot;)
+		end if
+
+	end if
+
+end sub
+
+&apos;CreateStripedLines: generates the famous effect of striped lines in spreadsheets
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells to generate the effect/formatting (text)
+sub CreateStripedLines(pSheet as String, pRange as String)
+Dim oSel As Object
+Dim num As Long
+
+	If CheckIfHasSheet(pSheet) Then
+
+		oSel = 	Sheet(pSheet).getCellRangeByName(pRange)
+	
+		For num = 0 To oSel.getRows.getCount() - 1 
+		
+			if num mod 2 = 0 then
+				oSel.getCellRangeByPosition(0,num,oSel.getColumns.getCount() -1 , num).CellBackColor = RGB( 230,230,230 )
+			else
+				oSel.getCellRangeByPosition(0,num,oSel.getColumns.getCount() -1 , num).CellBackColor = RGB( 255,255,255 )
+			end if
+	
+		Next
+		
+	end if
+
+End Sub
+
+&apos;ChangeFont: Change the font family to a new one
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells (text)
+&apos;pFont: Name of the new font that will be used (text)
+Sub ChangeFont(pSheet as String, pCell as String, pFont As String)
+
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet, pCell).CharFontName	= pFont
+	End if
+	
+End Sub
+
+&apos;Under Construction
+&apos;Sub CopyFontColor(pSheet as String, pCellToCopy as String, pCellToPaste As String) 
+&apos;Dim colorLong As Long
+&apos;Dim c$(3)
+&apos;	colorLong = Cell(pSheet, pCellToCopy).CharColor
+ 
+&apos; 	c = GetColorCode(  getRGBfromLong( colorLong ) )
+ 	
+&apos; 	ChangeFontColor(pSheet, pCellToPaste,  rgbColor(c(0), c(1), c(2)) )
+
+&apos;End sub
+
+</script:module>

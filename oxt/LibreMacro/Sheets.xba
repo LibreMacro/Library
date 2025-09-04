@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Sheets" script:language="StarBasic" script:moduleType="normal">
+&apos; Sheet: Returns the reference of a worksheet (Object).
+&apos; pSheet : worksheet name (text)
+FUNCTION Sheet (pSheet as String) as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	 
+		Sheet = Thiscomponent.Sheets.GetByName(pSheet)
+		
+	end if
+	
+	
+END FUNCTION
+
+&apos; Sheet: Returns the reference of a row (Object).
+&apos; pSheet : worksheet name (text)
+&apos; pRow : Row number (integer)
+FUNCTION Row (pSheet as String, pRow as Integer) as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	 
+		Row = Sheet(pSheet).getRows.getByIndex(pRow  - 1)
+		
+	end if
+	
+	
+END FUNCTION
+
+
+
+rem ************************************************* CELLS
+
+&apos; Cell: Returns a cell reference (Object).
+&apos; pSheet :Sheet name (text)
+&apos; pCell: Cell or range of cells (text)
+FUNCTION Cell (pSheet as String, pCell as String) as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	
+		If ThisComponent.Sheets.hasByName(pSheet) Then
+		
+			if UCase(mid(pCell,1,3)) = &quot;REF&quot; then
+			
+				r = getCellRef(pCell)
+			
+				Cell = Sheet(pSheet).getCellByPosition(r(1),r(0))	
+			
+			else	
+			
+				Cell = Sheet(pSheet).GetCellRangeByName(pCell)
+			
+			end if
+	
+		end if
+	
+	end if
+	
+END FUNCTION
+
+ 
+ &apos; ActiveSheet: Returns the active sheet reference (Object)
+Function ActiveSheet As Object
+
+	ActiveSheet = ThisComponent.getCurrentController.getActiveSheet()
+		
+End Function
+
+&apos; ActiveSheet: Returns the active sheet reference (text)
+Function ActiveSheetName As String
+
+	ActiveSheetName = ThisComponent.getCurrentController.getActiveSheet().getName()
+		
+End Function
+
+
+&apos; CreateSheet: Create a new spreadsheet
+&apos; pName: Name of the sheet to be created (text)
+Sub CreateSheet(pName As String)
+	
+	Dim spreadsheet As Object
+	
+	If not ThisComponent.Sheets.hasByName(pName) Then
+		spreadsheet = ThisComponent.createInstance(&quot;com.sun.star.sheet.Spreadsheet&quot;)
+		ThisComponent.Sheets.insertByName(pName, spreadsheet)
+	End if
+	
+End Sub
+
+
+&apos; RemoveSheet: Remove a spreadsheet
+&apos; pName: Sheet name to be deleted (text)
+Sub RemoveSheet(pName As String)
+
+	Dim spreadsheet As Object
+	
+	If CheckIfHasSheet(pSheet) Then
+		ThisComponent.Sheets.removeByName(pName)
+	End if
+
+End Sub
+
+&apos; FindTextInCell: Search for text within a certain cell
+&apos; pText : Text to be searched (text)
+&apos; pCell : Cell in which the search takes place (text)
+FUNCTION FindTextInCell(pText as String, pCell as String) as Boolean
+
+	if InStr( Cell(pCell).String , pText) &lt;&gt; 0 then
+		FindTextInTheCell = true
+	else
+		FindTextInTheCell = false
+	end if
+
+END Function
+
+&apos; FindTextInColumn: Search for text within a certain cell
+&apos; pText : Text to be searched (text)
+&apos; pColumn : Number Of Column (A -&gt; 1, B -&gt; 2, C -&gt; 3)
+&apos; pLimit : Search the column until reaching the number row
+FUNCTION FindTextInColumn(pText as String, pSheet as String , pColumn as Integer, Optional pLimitOption as Integer) as Boolean
+dim vCell as String
+dim vSearchedText as String
+dim vCellContent as String
+dim vLimit as Integer
+dim vColumn as Integer
+dim vFindTextInTheCell as Boolean 
+
+	vFindTextInColumn = false
+
+	if pText &lt;&gt; &quot;&quot; then
+
+		if IsMissing(pColumn) Then
+			vColumn = 1
+		Else
+			vColumn = pColumn
+		end If
+		
+		
+		if IsMissing(pLimitOption) Then
+			vLimit = 1000	
+		Else
+			vLimit = pLimitOption
+		end If
+		
+		vSearchedText = Replace(pText, &quot; &quot;, &quot;&quot;)
+		vSearchedText = UCase( Trim( vSearchedText ) )
+		
+		for i = 1 to vLimit step 1
+		
+			vCellContent = Cell(pSheet, REF(i,vColumn) ).String 
+			vCellContent = Replace(vCellContent, &quot; &quot;, &quot;&quot;)
+			vCellContent = UCase( Trim( vCellContent ) ) 
+			
+			if vCellContent = vSearchedText then
+				vFindTextInColumn = true
+				setFoundCell(REF(i,vColumn))
+				setFoundRow(i)
+				FindTextInColumn = vFindTextInColumn
+			end if
+		next
+	
+	end if
+	
+	FindTextInColumn = vFindTextInColumn
+
+END Function
+
+rem ********************************************** Select one or more cells
+
+&apos; SelectCell: Select one or more cells
+&apos; pSheet : Sheet name (text)
+&apos; pCellRange: cell name or cell range name (text)
+Sub SelectCell(pSheet as String, pCellRange As String)
+
+	If CheckIfHasSheet(pSheet) Then
+		Dim Cells As Object
+		Cells = Cell(pSheet, pCellRange)
+		ThisComponent.getCurrentController.select(Cells)
+	end if
+	
+End Sub
+
+&apos; SelectCell: Select one row
+&apos; pSheet : Sheet name (text)
+&apos; pRow : Row number (Integer)
+Sub SelectRow(pSheet as String, pRow As Integer)
+
+	Dim oRow As Object
+	
+	If CheckIfHasSheet(pSheet) Then
+		
+		oRow = Row(pSheet, pRow)
+		ThisComponent.getCurrentController.select(oRow)
+		
+	end if
+
+end Sub
+
+
+rem ********************************************** INSERT ROWS
+
+&apos;InsertRows: Function for inserting rows at a certain position within a spreadsheet
+&apos;pSheet: Sheet name (text)
+&apos;pIndex: Insertion position:  Line number (number greater than zero)
+&apos;pUnits: quantity to be added (number greater than zero)
+Sub InsertRows (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Rows.insertByIndex(pIndex - 1, pUnits)
+	end if
+	
+END sub
+
+rem ********************************************** INSERT COLUMNS
+
+&apos;InsertColumns: Insert Columns
+&apos;pSheet: Sheet name (text)
+&apos;pIndex: Insertion position: Column number (Ex: Column A -&gt; 1, Column B -&gt; 2, Column C -&gt; 3)
+&apos;pUnits: Units to be inserted (number greater than zero)
+Sub InsertColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Columns.insertByIndex(pIndex - 1, pUnits)
+	end if
+	
+END sub
+
+rem ************************************************* DELETE LINES
+
+&apos;DeleteRows: Delete Rows
+&apos;pSheet: Desired spreadsheet (text)
+&apos;pIndex: Delete position: Row number (number greater than zero)
+&apos;pUnits: Units to be inserted (number greater than zero)
+Sub DeleteRows (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	If CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Rows.removeByIndex(pIndex - 1, pUnits)
+	end if
+	
+End sub
+
+
+rem ************************************************* DELETE COLUMNS
+
+&apos;DeleteColumns: Delete Columns
+&apos;pSheet: Desired spreadsheet (text)
+&apos;pIndex: Exclusion position: Column number (Ex: Column A -&gt; 1, Column B -&gt; 2, Column C -&gt; 3)
+&apos;pUnits: Units to be inserted (number greater than zero)
+Sub DeleteColumns (pSheet as String, pIndex as Integer, pUnits as Integer)
+
+	if CheckIfHasSheet(pSheet) Then
+		Sheet(pSheet).Columns.removeByIndex(pIndex - 1, pUnits)
+	end if
+	
+End sub
+
+&apos;InsertCellNote: Inserts annotation into a cell
+&apos;pSheet: Desired spreadsheet (text)
+&apos;pCell: Cell where the insertion will be performed (Ex: Cell A2 -&gt; &quot;A2&quot;, Cell D3 -&gt; &quot;D3&quot;) (text)
+&apos;pNote: Text containing the annotation
+Sub InsertCellNote(pSheet as String, pCell as String, pNote as String)
+
+	Dim vCellNotes As Object
+	Dim vCell as Object
+	
+	If CheckIfHasSheet(pSheet) Then
+	
+		vCell = Cell(pSheet, pCell)	 
+		vCellNotes = Sheet(pSheet).getAnnotations()
+		vCellNotes.insertNew(vCell.getCellAddress(), pNote)
+	
+	end if
+	
+End Sub
+
+&apos;RemoveCellNote: Inserts note into a cell
+&apos;pSheet: Desired spreadsheet (text)
+&apos;pCell: Cell where the annotation will be deleted (Ex: Cell A2 -&gt; &quot;A2&quot;, Cell D3 -&gt; &quot;D3&quot;) (text)
+Sub RemoveCellNote(pSheet as String, pCell as Object)
+
+	Dim cellNotes As Object
+	Dim oNotas As Object
+	Dim oNota As Object
+	Dim co1 As Long
+	
+	If CheckIfHasSheet(pSheet) Then
+	
+		oNotas = Sheet(pSheet).getAnnotations()
+		oCelda = pCell
+		&apos; Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (início)
+		If oNotas.getCount() &gt; 0 Then
+			For co1 = 0 To oNotas.getCount - 1
+				oNota = oNotas.getByIndex( co1 )
+				If oNota.getPosition.Column = oCelda.getCellAddress.Column And oNota.getPosition.Row = oCelda.getCellAddress.Row Then
+					oNotas.removeByIndex( co1 )
+					Exit Sub
+				End If
+				Next co1
+		end if
+		&apos; Reference: https://www.schiavinatto.com/mundolibre/biblioteca/aprendiendo/6.4.6---trabajando-con-notas.html (fim)
+	
+		cellNotes.RemoveByAddress(pCell.getCellAddress()) 
+	
+	end if
+	
+End Sub
+
+rem ************************************************* Cleans the contents of the cells
+
+&apos;ClearContents: Clear existing content in cells
+&apos;This version only excludes values, texts and date/time keeping, therefore,
+&apos;the formulas.
+&apos;pSheet: Sheet name (text)
+&apos;pRange: Range of cells to clear content (text)
+&apos;pOption (optional):
+&apos; small - Erases values, texts and date/time information
+&apos; medium - In addition to what content does, it also erases formulas
+&apos; all - Erases everything in the cell (formats, annotations, formulas, content, etc.) 
+Sub ClearContents (pSheet as String, pRange as String, Optional pOpcao as String)
+dim vNumber as Integer
+	
+	vNumber = 7
+	
+	if pOpcao = &quot;medium&quot; then
+		vNumber = 23
+	elseif pOpcao = &quot;large&quot; then
+		vNumber = 1023
+	end if
+	
+	&apos;Sheet(pSheet).getCellRangeByName(pRange).ClearContents(vNumber)
+	If CheckIfHasSheet(pSheet) Then
+		Cell(pSheet,pRange).ClearContents(vNumber)
+	end if
+
+End sub
+
+rem ********************************************* Ascending Order
+&apos;pSheet: sheet name
+&apos;pRange: Range of cells to sort (text) (Ex: &quot;A1:C3&quot;, &quot;B5:D11&quot;)
+&apos;pIndex: Reference column number (Ex: 1 - First column, 2 - second column etc.)
+Sub SortAsc (pSheet as String, pRange as String, pIndex as Integer)
+
+  Dim oSortFields(0) As New com.sun.star.util.SortField
+ 
+  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
+   
+  If CheckIfHasSheet(pSheet) Then
+  
+	  oSortFields(0).Field = pIndex - 1
+	  oSortFields(0).SortAscending = True
+	
+	  oSortDesc(0).Name = &quot;SortFields&quot;
+	  oSortDesc(0).Value = oSortFields()
+	
+	  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  
+  end if
+ 
+End sub
+
+rem ************************************************* Descending order
+&apos;pSheet: sheet name (text)
+&apos;pRange: Range of cells to sort (text) (Ex: &quot;A1:C3&quot;, &quot;B5:D11&quot;)
+&apos;pIndex: Reference column number (Ex: 1 - First column, 2 - second column etc.)
+Sub SortDesc (pSheet as String, pRange as String, pIndex as Integer)
+
+  Dim oSortFields(0) As New com.sun.star.util.SortField
+ 
+  Dim oSortDesc(0) As New com.sun.star.beans.PropertyValue
+  
+  If CheckIfHasSheet(pSheet) Then
+	
+	  oSortFields(0).Field = pIndex
+	  oSortFields(0).SortAscending = False
+	
+	  oSortDesc(0).Name = &quot;SortFields&quot;
+	  oSortDesc(0).Value = oSortFields()
+	  
+	  Sheet(pSheet).getCellRangeByName(pRange).Sort(oSortDesc())
+  
+  end if
+   
+end sub
+
+
+</script:module>

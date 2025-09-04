@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Dialogs" script:language="StarBasic" script:moduleType="normal">&apos;ConfirmDialog: Dialog box containing a question and two options: Ok and Cancel.
+&apos;pQuestion: Question displayed in dialog (text)
+&apos;pDialogTitle (Optional): Dialog title (text)
+FUNCTION ConfirmDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
+
+	if Dialog(pQuestion, pDialogTitle, &quot;confirmDialog&quot;) = true then
+		ConfirmDialog =  true
+	else
+		ConfirmDialog = false
+	end if
+
+END FUNCTION
+
+&apos; QuestionDialog: Dialog box containing a question and two options: &quot;Yes&quot; and &quot;No&quot;
+&apos; pQuestion: Question displayed in dialog (text)
+&apos; pDialogTitle (Optional) : Dialog title (text)
+FUNCTION QuestionDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
+
+	if Dialog(pQuestion, pDialogTitle, &quot;questionDialog&quot;) = true then
+		QuestionDialog =  true
+	else
+		QuestionDialog = false
+	end if
+
+END FUNCTION
+
+
+rem **************************** General Function
+&apos; Dialog: Dialog box containing a question and two options.
+&apos; pQuestion: Question displayed in dialog
+&apos; pDialogTitle: Dialog Title (Optional)
+&apos; -------------
+&apos; pDialogType: Dialog Type (Optional). Choice:
+&apos; questionDialog -(Yes and no button) - Default Value
+&apos; confirmDialog - (Ok and cancel button)
+&apos; retryDialog - (&quot;Retry&quot; and cancel button)
+&apos; -------------
+&apos; pDefaultButton: Choose Default Button
+&apos; firstBtnDefault - First Button (Default Value)
+&apos; secondBtnDefault - Second Button;
+&apos; -------------
+&apos; pIcon: Choose dialog box icon: stopIcon, questionIcon, exclamationIcon, informationIcon
+&apos; -------------
+&apos; Note: For custom &quot;Dialog Box&quot;, see:
+&apos; https://help.libreoffice.org/6.2/en-US/text/sbasic/shared/0310102.html
+FUNCTION Dialog(pQuestion as String, Optional pDialogTitle as String, Optional pDialogType as String, Optional pDefaultButton as String, Optional pIcon as String) as Boolean
+
+	DIM parameters, result, selectedButton, selectedIcon as Integer
+	
+	If InStr(pDefaultButton , &quot;second&quot;) &lt;&gt; 0 then
+		selectedButton = 256 
+	ELSE 
+		selectedButton = 128
+	END IF
+
+	If InStr(pIcon , &quot;stop&quot;) &lt;&gt; 0 then
+		selectedIcon = 16
+	ElseIf InStr(pIcon , &quot;exclamation&quot;) &lt;&gt; 0 then
+		selectedIcon = 48
+	ElseIf  InStr(pIcon , &quot;information&quot;) &lt;&gt; 0 then
+		selectedIcon = 64 	
+	Else
+		selectedIcon = 32	
+	END IF	
+	
+	If InStr(pDialogType , &quot;confirm&quot;) &lt;&gt; 0 then
+		parameters =  selectedButton + selectedIcon + 1	
+		result = 1	
+	ElseIf InStr(pDialogType , &quot;retry&quot;) &lt;&gt; 0 then	
+		parameters =  selectedButton + selectedIcon + 5	
+		result = 4	
+	ELSE						&apos;ConfirmDialog	
+		parameters =  selectedButton + selectedIcon + 4
+		result = 6		
+	END IF
+
+	IF MsgBox (pQuestion, parameters, pDialogTitle) = result then 
+		Dialog = true
+	ELSE 
+		Dialog = false
+	END IF
+
+END FUNCTION
+
+&apos; Dialog3: Dialog box containing one question and three options.
+&apos; pQuestion: Question displayed in dialog
+&apos; pDialogTitle: Dialog Title (Optional)
+&apos; -------------
+&apos; pDialogType: Dialog Type (Optional). Choice:
+&apos; confirmDialog - Buttons Yes, No, and Cancel buttons - Default Value
+&apos; retryDialog - &quot;Abort&quot;, &quot;Retry&quot; and &quot;Ignore&quot; buttons
+&apos; -------------
+&apos; pDefaultButton: Choose Default Button
+&apos; firstBtnDefault - First Button (Default Value)
+&apos; secondBtnDefault - Second Button;
+&apos; -------------
+&apos; pIcon: Choose dialog box icon: stopIcon, questionIcon, exclamationIcon, informationIcon
+&apos; -------------
+&apos; Note: For custom &quot;Dialog Box&quot;, see:
+&apos; https://help.libreoffice.org/6.2/en-US/text/sbasic/shared/0310102.html
+&apos; ---------------------------
+&apos;Example of use:
+&apos;DIM result as String
+&apos;
+&apos; result = Dialog3(&quot;Are you sure ?&quot;)
+&apos;
+&apos; Select Case result
+&apos; Case &quot;No&quot;:
+&apos; 	Action if not
+&apos; Case &quot;Yes&quot;
+&apos; 	Action if yes
+&apos; Case &quot;Cancel&quot;
+&apos; 	Action in case of cancel
+&apos; End Select
+FUNCTION Dialog3(pQuestion as String, Optional pDialogTitle as String, Optional pDialogType as String, Optional pDefaultButton as String, Optional pIcon as String) as String
+	DIM parameters, result, selectedButton, selectedIcon, btn1, btn2, btn3 as Integer
+	
+	If InStr(pDefaultButton , &quot;second&quot;) &lt;&gt; 0 then
+		selectedButton = 256 
+	Elseif  InStr(pDefaultButton , &quot;third&quot;) &lt;&gt; 0 then 
+		selectedButton = 512
+	ELSE 
+		selectedButton = 128
+	END IF
+
+	If InStr(pIcon , &quot;stop&quot;) &lt;&gt; 0 then
+		selectedIcon = 16
+	ElseIf InStr(pIcon , &quot;exclamation&quot;) &lt;&gt; 0 then
+		selectedIcon = 48
+	ElseIf  InStr(pIcon , &quot;information&quot;) &lt;&gt; 0 then
+		selectedIcon = 64 	
+	Else
+		selectedIcon = 32	
+	END IF	
+	
+	If InStr(pDialogType , &quot;retry&quot;) &lt;&gt; 0 then	    &apos; Display Abort, Retry, and Ignore buttons.
+		parameters =  selectedButton + selectedIcon + 5	
+
+	Else &apos;InStr(pDialogType , &quot;confirm&quot;) &lt;&gt; 0 then 	&apos; Display Yes, No, and Cancel buttons.
+		parameters =  selectedButton + selectedIcon + 3	
+		
+	END IF
+	
+
+	result = MsgBox (pQuestion, parameters, pDialogTitle)
+	
+	Select Case result
+	Case 2: 
+		Dialog3 = &quot;Cancel&quot;
+	Case 3: 
+		Dialog3 = &quot;Abort&quot;
+	Case 4: 
+		Dialog3 = &quot;Retry&quot;
+	Case 5:
+		Dialog3 = &quot;Ignore&quot;
+	Case 6:
+		Dialog3 = &quot;Yes&quot;
+	Case 7:
+		Dialog3 = &quot;No&quot;
+	
+	End Select 
+
+END FUNCTION
+
+&apos; RetryDialog: Dialog containing a question and two options: &quot;Retry&quot; and &quot;Cancel&quot;.
+&apos; pQuestion: Question displayed in dialog (text)
+&apos; pDialogTitle (Optional) : Dialog title (text)
+FUNCTION RetryDialog(pQuestion as String, Optional pDialogTitle as String) as Boolean
+
+	if Dialog(pQuestion, pDialogTitle, &quot;retryDialog&quot;) = true then
+		RetryDialog =  true
+	else
+		RetryDialog = false
+	end if
+
+END FUNCTION
+
+</script:module>

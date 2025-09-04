@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
+<script:module xmlns:script="http://openoffice.org/2000/script" script:name="Utils" script:language="StarBasic" script:moduleType="normal">REM  *****  BASIC  *****
+
+Option Explicit
+
+&apos; Exporta a planilha (ou um intervalo) para PDF.
+&apos; Ex.: ExportToPDF(&quot;Planilha1&quot;, &quot;/Users/name/relatorio.pdf&quot;)
+&apos; Ex.: ExportToPDF(&quot;Planilha1&quot;, &quot;/Users/name/Desktop/relatorio.pdf&quot;, &quot;A1:C3&quot;)
+Sub ExportToPDF(pSheet As String, Optional pPath As String, Optional pRange As String, Optional pQuality As Variant)
+
+    Dim oDoc As Object, oSheets as Object, oSheet As Object, oRange As Object
+    Dim args(1) As New com.sun.star.beans.PropertyValue
+    Dim pdf(5) As New com.sun.star.beans.PropertyValue
+    Dim url As String
+    Dim i as Integer
+
+	If IsMissing(pPath) Then
+		pPath = GetUserDocumentsDir &amp;  GetSystemPathSeparator &amp; &quot;export_LibreMacro_PDF.pdf&quot;
+	end if
+	
+    oDoc = ThisComponent
+
+    If Not IsMissing(pRange) And Len(pRange) &gt; 0 Then
+
+        oRange = Cell(pSheet,pRange)
+        oDoc.CurrentController.select( oRange )
+    Else
+        &apos; Caso contrário, seleciona a planilha inteira.
+        oDoc.CurrentController.select( Sheet(pSheet) )
+    End If
+   
+    pdf(0).Name = &quot;Selection&quot; : pdf(0).Value = oDoc.CurrentController.Selection
+    pdf(1).Name = &quot;UseLosslessCompression&quot; : pdf(1).Value = False
+    pdf(2).Name = &quot;ReduceImageResolution&quot;  : pdf(2).Value = True
+    pdf(3).Name = &quot;MaxImageResolution&quot;     : pdf(3).Value = 300
+    pdf(4).Name = &quot;ExportBookmarks&quot;        : pdf(4).Value = False
+
+	If IsMissing(pQuality) Then
+		pdf(5).Name = &quot;Quality&quot;
+        pdf(5).Value = 90 
+	else
+		pdf(5).Name = &quot;Quality&quot;
+        pdf(5).Value = CInt(pQuality)
+    end if
+
+    args(0).Name = &quot;FilterName&quot; : args(0).Value = &quot;calc_pdf_Export&quot;
+    args(1).Name = &quot;FilterData&quot; : args(1).Value = pdf()
+
+    url = ConvertToURL(pPath)
+    oDoc.storeToURL(url, args())
+End Sub
+
+</script:module>

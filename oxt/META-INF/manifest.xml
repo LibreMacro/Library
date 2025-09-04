@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<manifest:manifest xmlns:manifest="http://openoffice.org/2001/manifest">
-  <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-library"
-                       manifest:full-path="LibreMacro/"/>
-  <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-script"
-                       manifest:full-path="LibreMacro/script.xlb"/>
-  <manifest:file-entry manifest:media-type="application/vnd.sun.star.basic-dialog"
-                       manifest:full-path="LibreMacro/dialog.xlb"/>
-  <manifest:file-entry manifest:media-type="text/xml"
-                       manifest:full-path="description.xml"/>
-
-  <!-- Ícones -->
-  <manifest:file-entry manifest:media-type="image/png"
-                       manifest:full-path="icons/icon_16.png"/>
-  <manifest:file-entry manifest:media-type="image/png"
-                       manifest:full-path="icons/icon_32.png"/>
-  <manifest:file-entry manifest:media-type="image/png"
-                       manifest:full-path="icons/icon_48.png"/>
-  <manifest:file-entry manifest:media-type="image/png"
-                       manifest:full-path="icons/icon_64.png"/>
+<manifest:manifest>
+   <manifest:file-entry manifest:full-path="LibreMacro/" manifest:media-type="application/vnd.sun.star.basic-library"/>
+   <manifest:file-entry manifest:full-path="pkg-description/pkg-description.en" manifest:media-type="application/vnd.sun.star.package-bundle-description;locale=en"/>
+   <manifest:file-entry manifest:full-path="pkg-description/pkg-description.pt-BR" manifest:media-type="application/vnd.sun.star.package-bundle-description;locale=pt-BR"/>
+   <manifest:file-entry manifest:full-path="Addons.xcu" manifest:media-type="application/vnd.sun.star.configuration-data"/>
 </manifest:manifest>
