@@ -191,5 +191,3 @@ Dim vSecondColor As String
 
 End Sub
 
-
-
